@@ -1,3 +1,3 @@
 # HundirLaFlota
 
-**Este juego trata de lanzar aros**
+**Este juego trata de lanzar**
