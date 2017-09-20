@@ -2,7 +2,7 @@
 
 ___
 #### Pablo Rodríguez  
-[p.rodriguez.vic@alumnos.urjc.es](p.rodriguez.vic@alumnos.urjc.es)  
+[p.rodriguezvic@alumnos.urjc.es](p.rodriguezvic@alumnos.urjc.es)  
 pabloski300
 #### Jose Daniel Campos  
 [jd.campos@alumnos.urjc.es](j.campos.gal@alumnos.urjc.es)  
