@@ -1,12 +1,12 @@
 # HLF Online
 ___
 ## Índice
-1. Desarrolladores y Creditos
+1. Desarrolladores y Créditos
 2. Descripción del Juego
 3. Funcionamiento en el cliente
 4. Funcionamiento de Cara al servidor
 ___
-## 1 Desarrolladores y Creditos
+## 1 Desarrolladores y Créditos
 #### Pablo Rodríguez  
 [p.rodriguezvic@alumnos.urjc.es](p.rodriguezvic@alumnos.urjc.es)  
 pabloski300
