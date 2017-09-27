@@ -1,0 +1,36 @@
+﻿<html lang="es"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 1</title>
+	<script type="text/javascript" src="../JavaScript/phaser.js"></script>
+    <script type="text/javascript" src="../JavaScript/jquery-3.2.1.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script type = "text/javascript">
+        const PART_ONE = "Parte1";
+        const PART_TWO = "Parte2";
+        const WAIT = "Espera";
+        var GameState = "";//Estado del juego, (Primera Fase, segunda Fase, Espera)
+
+
+        function Celda(x, y) {
+            this.posX = x;
+            this.posY = y;
+        }
+
+        function Barco(imgSrc) {
+            var img = new Image(100, 400);
+            img.src = imgSrc;          
+        }
+
+       window.onload = function (e) {
+           
+       }
+    </script>
+</body>
+</html>
