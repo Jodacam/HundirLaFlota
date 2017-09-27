@@ -3,8 +3,8 @@ ___
 ## Índice
 1. Desarrolladores y Créditos
 2. Descripción del Juego
-3. Funcionamiento en el cliente
-4. Funcionamiento de Cara al servidor
+3. Funcionamiento en el Cliente
+4. Funcionamiento en el lado del Servidor
 ___
 ## 1 Desarrolladores y Créditos
 #### Pablo Rodríguez  
