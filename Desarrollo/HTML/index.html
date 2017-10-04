@@ -8,28 +8,68 @@
         body {
             margin: 0;
         }
+        
     </style>
 </head>
 <body>
+        <canvas id="canvas" height="2000" width="3000">
+    </canvas>
     <script type = "text/javascript">
+
+        var contexto = document.getElementById("canvas").getContext("2d");
+        //canvas.addEventListener("click", , false);
+
         const PART_ONE = "Parte1";
         const PART_TWO = "Parte2";
         const WAIT = "Espera";
         var GameState = "";//Estado del juego, (Primera Fase, segunda Fase, Espera)
-
+        
+        var lienzo = document.getElementById("canvas");
 
         function Celda(x, y) {
             this.posX = x;
             this.posY = y;
+
+            this.pintar = function () {
+                contexto.fillStyle = "#0099FF";
+                contexto.strokeStyle = "#FFFFFF"
+                contexto.fillRect((this.posX), (this.posY), 80, 80);
+                contexto.strokeRect((this.posX), (this.posY), 80, 80);
+            }
         }
 
         function Barco(imgSrc) {
             var img = new Image(100, 400);
-            img.src = imgSrc;          
+            img.src = imgSrc;
+            var npartes;
+            var partes = new Array(nceldas);
         }
 
-       window.onload = function (e) {
-           
+        function Tablero() {
+            var tablero = new Array(10);
+            for (var i = 0; i < 10; i++)
+                tablero[i] = new Array(10);
+
+            for (var i = 0; i < 10; i++){
+                for (var j = 0; j < 10; j++){
+                    tablero[i][j] = new Celda(i*80, j*80);
+                }
+            }
+            this.pintar = function(){
+                for (var i = 0; i < 10; i++) {
+                    for (var j = 0; j < 10; j++) {
+                        tablero[i][j].pintar();
+                    }
+                }
+            }
+
+        }
+
+        window.onload = function (e) 
+        {
+            var tablero = new Tablero();
+            tablero.pintar();
+
        }
     </script>
 </body>
