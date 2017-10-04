@@ -12,6 +12,9 @@
     </style>
 </head>
 <body>
+   
+    
+    
         <canvas id="canvas">
     </canvas>
     <script type = "text/javascript">
@@ -62,7 +65,7 @@
             this.colorA = "#0099FF";
             this.colorB = "#FFFFFF";
 
-            this.offsetX = (lienzo.width - anchoTablero*2) / 2 - 40;
+            this.offsetX = (lienzo.width) / 2 + 40;
             this.offsetY = (lienzo.height - anchoTablero) / 2;
 
             this.posX = x + this.offsetX;
@@ -75,19 +78,35 @@
             this.colorA = "#0099FF";
             this.colorB = "#000000";
 
-            ////////////MODIFY
-            this.offsetX = (lienzo.width) / 2  + 40;
+            this.offsetX = (lienzo.width - anchoTablero * 2) / 2 - 40;
             this.offsetY = (lienzo.height - anchoTablero) / 2;
 
             this.posX = x + this.offsetX;
             this.posY = y + this.offsetY;
         };
 
-        function Barco(imgSrc) {
-            var img = new Image(100, 400);
+        function Barco(imgSrc, nceldas, x, y) {
+            var img = new Image();
             img.src = imgSrc;
-            var npartes;
-            var partes = new Array(nceldas);
+
+
+
+            this.npartes = nceldas;
+            this.partes = new Array(this.npartes);
+            this.posX = x;
+            this.posY = y;
+            img.onload = function () {
+                contexto.drawImage(img, this.posX, this.posY);
+            }
+            img.onclick = function (e) {
+                contexto.drawImage(img, 64, 800);
+            }
+
+            this.pintar = function () {
+                contexto.drawImage(img,this.posX,this.posY);
+            }
+
+
         };
 
         function Tablero() {
@@ -128,17 +147,18 @@
                 }
             }
         };
-
+        var pruebaBarco = new Barco("images/Barco2Solo.png", 2, 100, 100);
         window.onload = function (e) 
         {
+            GameState = PART_ONE;
             var tablero = new TableroA();
             tablero.generar();
             tablero.pintar();
-
             var tablero2 = new TableroE();
             tablero2.generar();
             tablero2.pintar();
-       }
+            pruebaBarco.pintar();
+        }
     </script>
 </body>
 </html>
