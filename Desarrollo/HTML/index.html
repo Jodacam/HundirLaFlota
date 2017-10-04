@@ -1,121 +1,109 @@
-﻿<html lang="es"> 
+<html lang="es"> 
 <head> 
 	<meta charset="UTF-8" />
 	<title>Phaser - Making your first game, part 1</title>
 	<script type="text/javascript" src="../JavaScript/phaser.js"></script>
     <script type="text/javascript" src="../JavaScript/jquery-3.2.1.js"></script>
-    <style type="text/css">
-        body {
-            margin: 0;
-        }
-        
-    </style>
 </head>
 <body>
-   
-    
-    
-        <canvas id="canvas">
-    </canvas>
     <script type = "text/javascript">
         "use strict";
 
-        var contexto = document.getElementById("canvas").getContext("2d");
-        //canvas.addEventListener("click", , false);
+        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
 
-        const PART_ONE = "Parte1";
-        const PART_TWO = "Parte2";
-        const WAIT = "Espera";
-        var GameState = "";//Estado del juego, (Primera Fase, segunda Fase, Espera)
+
+        var tablero;
+        var tablero2;
+        var bmd;
+        var lienzo;
+
+        var anchura = window.innerWidth/2;
+        var anchoTablero = anchura*0.7;
         
-        var lienzo = document.getElementById("canvas");
 
-        function pantallaCompleta() {
-            lienzo.width = window.innerWidth;
-            lienzo.height = window.innerHeight;
+        function preload(){
+            game.load.image('barco2', 'images/Barco2Solo.png');
+            game.load.image('barco3', 'images/Barco3Solo.png');
+            game.load.image('barco4', 'images/Barco4Solo.png');
+        }
 
-            console.log('Ancho de la pantalla: ' + lienzo.width);
-            console.log('Alto de la pantalla: ' + lienzo.height);
-        };
-        pantallaCompleta();
+        function create(){
+            lienzo = game.add.graphics(0,0);
 
-        var anchura = lienzo.width / 2;
-        var anchoTablero = anchura*0.65;
-        
-        var game = new Phaser.Game(lienzo.width, lienzo.height, Phaser.Canvas, 'phaser-example', { preload: window.onload,create: creation });
+            tablero = new TableroA();
+            tablero2 = new TableroE();
+
+            tablero.generar();
+            tablero2.generar();
+
+            game.add.sprite(20, 20, 'barco2');
+
+            tablero.pintar();
+            tablero2.pintar();
+            
+        }
+
+        function update(){
+
+        }
 
 
+        function render(){
+            
+        }
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         function Celda(x, y) {
             this.posX;
             this.posY;
 
+            this.rect;
+
             this.colorA;
             this.colorB;
 
-            this.pintar = function () {
-                contexto.fillStyle = this.colorA;
-                contexto.strokeStyle = this.colorB;
-                contexto.lineWidth = 5;
-                contexto.fillRect((this.posX), (this.posY), anchoTablero / 10, anchoTablero / 10);
-                contexto.strokeRect((this.posX), (this.posY), anchoTablero / 10, anchoTablero / 10);
+            this.pintar = function(){
+                var graphics = game.add.graphics(0, 0);
+                graphics.lineStyle(6, this.colorB, 1);
+                graphics.beginFill(this.colorA);
+                graphics.drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height); // coordenada X, coordenada Y, ancho y alto
+                graphics.endFill();
             }
         };
 
         function CeldaA(x, y){
             Celda.call(this, x, y);
 
-            this.colorA = "#0099FF";
-            this.colorB = "#FFFFFF";
+            this.colorA = 0x0099ff;
+            this.colorB = 0xFFFFFF;
 
-            this.offsetX = (lienzo.width) / 2 + 40;
-            this.offsetY = (lienzo.height - anchoTablero) / 2;
+            this.offsetX = (game.width) / 2 + 40;
+            this.offsetY = (game.height - anchoTablero) / 2;
 
             this.posX = x + this.offsetX;
             this.posY = y + this.offsetY;
+
+            this.rect = new Phaser.Rectangle(this.posX, this.posY, anchoTablero / 10, anchoTablero / 10);
         };
 
         function CeldaE(x, y){
             Celda.call(this, x, y);
 
-            this.colorA = "#0099FF";
-            this.colorB = "#000000";
+            this.colorA = 0x00ff99;
+            this.colorB = 0x000000;
 
-            this.offsetX = (lienzo.width - anchoTablero * 2) / 2 - 40;
-            this.offsetY = (lienzo.height - anchoTablero) / 2;
+            this.offsetX = (game.width - anchoTablero * 2) / 2 - 40;
+            this.offsetY = (game.height - anchoTablero) / 2;
 
             this.posX = x + this.offsetX;
             this.posY = y + this.offsetY;
+
+            this.rect = new Phaser.Rectangle(this.posX, this.posY, anchoTablero / 10, anchoTablero / 10);
         };
 
         function Barco(imgSrc, nceldas, x, y) {
-           /* var img = new Image();
-            img.src = imgSrc;
-            */
-
-            game.load.image('Barco', imgSrc);
-            
-            var sprite;
-            this.npartes = nceldas;
-            this.partes = new Array(this.npartes);
-            this.posX = x;
-            this.posY = y;
-            this.loadImage = function () {
-                sprite = game.add.sprite(100, 100, 'Barco');
-            }
-
-
-
-        /*    img.onload = function () {
-                contexto.drawImage(img, this.posX, this.posY);
-            }
-            img.onclick = function (e) {
-                contexto.drawImage(img, 64, 800);
-            }
-            */
-          /*  this.pintar = function () {
-                contexto.drawImage(img,this.posX,this.posY);
-            }
-            */
 
         };
 
@@ -125,9 +113,9 @@
             for (var i = 0; i < 10; i++)
                 this.tablero[i] = new Array(10);
 
-            this.pintar = function(){
-                for (var i = 0; i < 10; i++) {
-                    for (var j = 0; j < 10; j++) {
+            this.pintar = function(i, j){
+                for(var i = 0; i < 10; i++){
+                    for(var j = 0; j < 10; j++){
                         this.tablero[i][j].pintar();
                     }
                 }
@@ -157,31 +145,6 @@
                 }
             }
         };
-        
-        var pruebaBarco ;
-        window.onload = function (e) 
-        {
-
-
-            GameState = PART_ONE;
-            var tablero = new TableroA();
-            tablero.generar();
-            tablero.pintar();
-            var tablero2 = new TableroE();
-            tablero2.generar();
-            tablero2.pintar();
-          pruebaBarco  = new Barco("images/Barco2Solo.png", 2, 100, 100);          
-           
-
-        }
-
-
-        function creation() {
-            var images = game.cache.getKeys(Phaser.Cache.IMAGE);
-
-            pruebaBarco.loadImage();
-        }
-
     </script>
 </body>
 </html>
