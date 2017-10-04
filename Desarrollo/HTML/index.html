@@ -12,9 +12,10 @@
     </style>
 </head>
 <body>
-        <canvas id="canvas" height="2000" width="3000">
+        <canvas id="canvas">
     </canvas>
     <script type = "text/javascript">
+        "use strict";
 
         var contexto = document.getElementById("canvas").getContext("2d");
         //canvas.addEventListener("click", , false);
@@ -26,50 +27,117 @@
         
         var lienzo = document.getElementById("canvas");
 
+        function pantallaCompleta() {
+            lienzo.width = window.innerWidth;
+            lienzo.height = window.innerHeight;
+
+            console.log('Ancho de la pantalla: ' + lienzo.width);
+            console.log('Alto de la pantalla: ' + lienzo.height);
+        };
+        pantallaCompleta();
+
+        var anchura = lienzo.width / 2;
+        var anchoTablero = anchura*0.65;
+        
+
         function Celda(x, y) {
-            this.posX = x;
-            this.posY = y;
+            this.posX;
+            this.posY;
+
+            this.colorA;
+            this.colorB;
 
             this.pintar = function () {
-                contexto.fillStyle = "#0099FF";
-                contexto.strokeStyle = "#FFFFFF"
-                contexto.fillRect((this.posX), (this.posY), 80, 80);
-                contexto.strokeRect((this.posX), (this.posY), 80, 80);
+                contexto.fillStyle = this.colorA;
+                contexto.strokeStyle = this.colorB;
+                contexto.lineWidth = 5;
+                contexto.fillRect((this.posX), (this.posY), anchoTablero / 10, anchoTablero / 10);
+                contexto.strokeRect((this.posX), (this.posY), anchoTablero / 10, anchoTablero / 10);
             }
-        }
+        };
+
+        function CeldaA(x, y){
+            Celda.call(this, x, y);
+
+            this.colorA = "#0099FF";
+            this.colorB = "#FFFFFF";
+
+            this.offsetX = (lienzo.width - anchoTablero*2) / 2 - 40;
+            this.offsetY = (lienzo.height - anchoTablero) / 2;
+
+            this.posX = x + this.offsetX;
+            this.posY = y + this.offsetY;
+        };
+
+        function CeldaE(x, y){
+            Celda.call(this, x, y);
+
+            this.colorA = "#0099FF";
+            this.colorB = "#000000";
+
+            ////////////MODIFY
+            this.offsetX = (lienzo.width) / 2  + 40;
+            this.offsetY = (lienzo.height - anchoTablero) / 2;
+
+            this.posX = x + this.offsetX;
+            this.posY = y + this.offsetY;
+        };
 
         function Barco(imgSrc) {
             var img = new Image(100, 400);
             img.src = imgSrc;
             var npartes;
             var partes = new Array(nceldas);
-        }
+        };
 
         function Tablero() {
-            var tablero = new Array(10);
-            for (var i = 0; i < 10; i++)
-                tablero[i] = new Array(10);
+            this.tablero = new Array(10);
 
-            for (var i = 0; i < 10; i++){
-                for (var j = 0; j < 10; j++){
-                    tablero[i][j] = new Celda(i*80, j*80);
-                }
-            }
+            for (var i = 0; i < 10; i++)
+                this.tablero[i] = new Array(10);
+
             this.pintar = function(){
                 for (var i = 0; i < 10; i++) {
                     for (var j = 0; j < 10; j++) {
-                        tablero[i][j].pintar();
+                        this.tablero[i][j].pintar();
                     }
                 }
             }
+        };
 
-        }
+        function TableroA(){
+            Tablero.call(this);
+
+            this.generar = function(){
+                for (var i = 0; i < 10; i++){
+                    for (var j = 0; j < 10; j++){
+                        this.tablero[i][j] = new CeldaA(i * anchoTablero / 10, j * anchoTablero / 10);
+                    }
+                }
+            }
+        };
+
+        function TableroE(){
+            Tablero.call(this);
+
+            this.generar = function(){
+                for (var i = 0; i < 10; i++){
+                    for (var j = 0; j < 10; j++){
+                        this.tablero[i][j] = new CeldaE(i * anchoTablero / 10, j * anchoTablero / 10);
+                    }
+                }
+            }
+        };
 
         window.onload = function (e) 
         {
-            var tablero = new Tablero();
+            var tablero = new TableroA();
+            tablero.generar();
             tablero.pintar();
 
+            var tablero2 = new TableroE();
+            tablero2.generar();
+            tablero2.pintar();
        }
     </script>
 </body>
