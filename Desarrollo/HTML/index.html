@@ -42,6 +42,8 @@
         var anchura = lienzo.width / 2;
         var anchoTablero = anchura*0.65;
         
+        var game = new Phaser.Game(lienzo.width, lienzo.height, Phaser.Canvas, 'phaser-example', { preload: window.onload,create: creation });
+
 
         function Celda(x, y) {
             this.posX;
@@ -86,26 +88,34 @@
         };
 
         function Barco(imgSrc, nceldas, x, y) {
-            var img = new Image();
+           /* var img = new Image();
             img.src = imgSrc;
+            */
 
-
-
+            game.load.image('Barco', imgSrc);
+            
+            var sprite;
             this.npartes = nceldas;
             this.partes = new Array(this.npartes);
             this.posX = x;
             this.posY = y;
-            img.onload = function () {
+            this.loadImage = function () {
+                sprite = game.add.sprite(100, 100, 'Barco');
+            }
+
+
+
+        /*    img.onload = function () {
                 contexto.drawImage(img, this.posX, this.posY);
             }
             img.onclick = function (e) {
                 contexto.drawImage(img, 64, 800);
             }
-
-            this.pintar = function () {
+            */
+          /*  this.pintar = function () {
                 contexto.drawImage(img,this.posX,this.posY);
             }
-
+            */
 
         };
 
@@ -147,9 +157,12 @@
                 }
             }
         };
-        var pruebaBarco = new Barco("images/Barco2Solo.png", 2, 100, 100);
+        
+        var pruebaBarco ;
         window.onload = function (e) 
         {
+
+
             GameState = PART_ONE;
             var tablero = new TableroA();
             tablero.generar();
@@ -157,8 +170,18 @@
             var tablero2 = new TableroE();
             tablero2.generar();
             tablero2.pintar();
-            pruebaBarco.pintar();
+          pruebaBarco  = new Barco("images/Barco2Solo.png", 2, 100, 100);          
+           
+
         }
+
+
+        function creation() {
+            var images = game.cache.getKeys(Phaser.Cache.IMAGE);
+
+            pruebaBarco.loadImage();
+        }
+
     </script>
 </body>
 </html>
