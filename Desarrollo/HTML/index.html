@@ -1,7 +1,7 @@
-<html lang="es"> 
+﻿<html lang="es"> 
 <head> 
 	<meta charset="UTF-8" />
-	<title>Phaser - Making your first game, part 1</title>
+	<title>HLF Online</title>
 	<script type="text/javascript" src="../JavaScript/phaser.js"></script>
     <script type="text/javascript" src="../JavaScript/jquery-3.2.1.js"></script>
 </head>
@@ -16,6 +16,11 @@
         var tablero2;
         var bmd;
         var lienzo;
+        var barco;
+        var flota;
+
+        //variable para detectar si se ha clicado
+        var clicado = false;
 
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.7;
@@ -27,7 +32,8 @@
             game.load.image('barco4', 'images/Barco4Solo.png');
         }
 
-        function create(){
+        function create() {
+            flota = game.add.group();
             lienzo = game.add.graphics(0,0);
 
             tablero = new TableroA();
@@ -36,20 +42,40 @@
             tablero.generar();
             tablero2.generar();
 
-            game.add.sprite(20, 20, 'barco2');
+            //creacion de la variable y activacion del movimiento
+            barco = game.add.sprite(20, 20, 'barco2');
+            barco.inputEnabled = true;
+            barco.input.start(0, true);
+            barco.events.onInputDown.add(select);
+            
+            //codigo para meter los barcos en una variable que los agrupe
+           /* for (var i = 0; i < 1; i++) {
+                barco = flota.create(20, 20, 'barco2',i);
+                barco.inputEnabled = true;
+                barco.input.start(0, true);
+                barco.events.onInputDown.add(select);
+            }*/
 
             tablero.pintar();
             tablero2.pintar();
             
         }
 
-        function update(){
+        function select(barco, pointer) {
+            console.log("has clickado el barco");
+            clickado = true;
+        }
+
+        function update() {
 
         }
 
-
+        //si se hace esto en la funcion de update no se renderiza
         function render(){
-            
+            if (clicado === true) {
+                barco.x = game.input.x - 50;
+                barco.y = game.input.y - 30;
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
