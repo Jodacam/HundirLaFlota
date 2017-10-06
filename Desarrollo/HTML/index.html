@@ -77,7 +77,8 @@
             };
 
             this.setRect = function(){
-                rect = new Phaser.Rectangle(posX, posY, anchoTablero / 10, anchoTablero / 10);;
+                rect = new Phaser.Rectangle(posX, posY, anchoTablero / 10, anchoTablero / 10);
+                
             };
         };
 
@@ -108,12 +109,10 @@
             this.setPosX(x + offsetX);
             this.setPosY(y + offsetY);
 
-            this.setRect();
+            this.setRect();            
         };
 
-        function Barco(imgSrc, nceldas, x, y) {
 
-        };
 
         function Tablero() {
             var tablero = new Array(10);
@@ -145,6 +144,21 @@
                     }
                 }
             }
+            this.checkRectangle = function (barco) {
+
+                for (var i = 0; i < this.getTablero().length; i++) {
+                    for (var j = 0; j < this.getTablero()[i].length; j++) {
+
+                        var rect = this.getTablero()[i][j].getRect();
+
+                        if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)) {
+                            barco.changePosition(rect.x, rect.y);
+                        }
+                    }
+
+
+                }
+            }
         };
 
         function TableroE(){
@@ -158,6 +172,27 @@
                 }
             }
         };
+
+        function Barco(sprite, nceldas, x, y) {
+            var barco = game.add.sprite(x, y, sprite);
+            barco.inputEnabled = true;
+            barco.input.start(0, true);
+            barco.events.onInputDown.add(select,barco,0,this);
+            flota.add(barco);
+            var partes = new Array(nceldas);
+            //funciones
+            this.changePosition = function (x, y) {
+                barco.x = x;
+                barco.y = y;
+            }
+            //Getters y Setters
+            this.getSprite = function () {
+                return barco;
+            }
+
+
+        };
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,8 +210,8 @@
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        var tablero;
-        var tablero2;
+        var tableroAliado;
+        var tableroEnemigo;
         var bmd;
         var lienzo;
         var barco;
@@ -184,11 +219,14 @@
         var flota;
 
         //variable para detectar si se ha clicado
-        var clicado = false;
+        var clicado = null;
 
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.7;
-
+        var gameState ='';
+        const PART_ONE = "parte1";
+        const PART_TWO = 'parte2';
+        const WAIT = 'espera';
 
         function preload(){
             game.load.image('barco2', 'images/Barco2Solo.png');
@@ -198,25 +236,21 @@
 
         function create() {
             //Para pintar los rect de las celdas
+            gameState = PART_ONE;
             bmd = game.add.bitmapData(game.width, game.height);
 
 
             flota = game.add.group();
 
-            tablero = new TableroA();
-            tablero2 = new TableroE();
+            tableroAliado = new TableroA();
+            tableroEnemigo = new TableroE();
 
-            tablero.generar();
-            tablero2.generar();
+            tableroAliado.generar();
+            tableroEnemigo.generar();
 
-            //creacion de la variable y activacion del movimiento
-            barco = game.add.sprite(20, 20, 'barco2');
-            barco.inputEnabled = true;
-            barco.input.start(0, true);
-            barco.events.onInputDown.add(select);
-
-            flota.add(barco);
             
+            var prueba = new Barco('barco2', 0, 100, 100);
+
             //codigo para meter los barcos en una variable que los agrupe
            /* for (var i = 0; i < 1; i++) {
                 barco = flota.create(20, 20, 'barco2',i);
@@ -225,27 +259,46 @@
                 barco.events.onInputDown.add(select);
             }*/
 
-            tablero.pintar();
-            tablero2.pintar();
+            tableroAliado.pintar();
+            tableroEnemigo.pintar();
             
         }
 
-        function select(barco, pointer) {
-            console.log("has clickado el barco");
-            clicado = true;
+        function setBarcoCasilla(rect, Celda) {
+            console.log("pulsadacasilla")
+            clicado.x = rect.x;
+            clicado.y = rect.y;
+
+        }
+
+
+        function select(pointer,click,barco) {
+            if (clicado === null) {
+                console.log("has clickado el barco");
+                clicado = barco;
+            }else
+            {
+                tableroAliado.checkRectangle(clicado);
+                clicado = null;
+            }
+
         }
 
         function update() {
             game.world.bringToTop(flota);
         }
 
+
+
         //si se hace esto en la funcion de update no se renderiza
         function render(){
-            if (clicado === true) {
-                barco.x = game.input.x - 50;
-                barco.y = game.input.y - 30;
+            if (clicado !== null && gameState === PART_ONE) {
+                clicado.changePosition(game.input.x, game.input.y);
+               
             }
         }
+
+
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
