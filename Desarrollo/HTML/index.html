@@ -9,8 +9,7 @@
     <script type = "text/javascript">
         "use strict";
 
-        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render});
-
+        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +151,7 @@
                         var rect = this.getTablero()[i][j].getRect();
 
                         if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)) {
-                            barco.changePosition(rect.x, rect.y);
+                            barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero/20));
                         }
                     }
 
@@ -173,17 +172,23 @@
             }
         };
 
-        function Barco(sprite, nceldas, x, y) {
+        function Barco(sprite, nceldas, x, y, n) {
             var barco = game.add.sprite(x, y, sprite);
+            barco.anchor.setTo(0.5,0.2);    //colocamos el centro del sprite
+            barco.width = anchoTablero / 10;
+            barco.height = (anchoTablero / 10) * n;
             barco.inputEnabled = true;
             barco.input.start(0, true);
-            barco.events.onInputDown.add(select,barco,0,this);
+            barco.events.onInputDown.add(select, barco, 0, this);
             flota.add(barco);
             var partes = new Array(nceldas);
             //funciones
             this.changePosition = function (x, y) {
                 barco.x = x;
                 barco.y = y;
+            }
+            this.rotate = function (r) {
+                barco.angle = r;
             }
             //Getters y Setters
             this.getSprite = function () {
@@ -221,6 +226,14 @@
         //variable para detectar si se ha clicado
         var clicado = null;
 
+        //variables para rotar
+        var Rotar;
+        var horizontal = false;
+        var pulsado = false;
+
+        //variable del barco
+        var prueba;
+
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.7;
         var gameState ='';
@@ -249,7 +262,7 @@
             tableroEnemigo.generar();
 
             
-            var prueba = new Barco('barco2', 0, 100, 100);
+            prueba = new Barco('barco2', 0, 100, 100, 3);
 
             //codigo para meter los barcos en una variable que los agrupe
            /* for (var i = 0; i < 1; i++) {
@@ -261,7 +274,9 @@
 
             tableroAliado.pintar();
             tableroEnemigo.pintar();
-            
+
+            //Asignación de tecla para rotación
+            Rotar = game.input.keyboard.addKey(Phaser.Keyboard.R);
         }
 
         function setBarcoCasilla(rect, Celda) {
@@ -286,16 +301,36 @@
 
         function update() {
             game.world.bringToTop(flota);
+            if (clicado !== null && gameState === PART_ONE) {
+                clicado.changePosition(game.input.x, game.input.y);
+            }
+            //rotaciones fijas de 90º
+            if (clicado !== null && Rotar.isDown && horizontal === false) {
+                if (!pulsado) {
+                    clicado.rotate(-90);
+                    horizontal = true;
+                    pulsado = true;
+                }
+
+            } else if (clicado !== null && Rotar.isDown && horizontal === true) {
+                if (!pulsado) {
+                    clicado.rotate(0);
+                    horizontal = false;
+                    pulsado = true;
+                }
+            }
+
+            if (Rotar.isUp)
+                pulsado = false;
+
         }
 
 
 
         //si se hace esto en la funcion de update no se renderiza
         function render(){
-            if (clicado !== null && gameState === PART_ONE) {
-                clicado.changePosition(game.input.x, game.input.y);
-               
-            }
+          
+            
         }
 
 
