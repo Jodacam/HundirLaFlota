@@ -236,8 +236,6 @@
         var prueba2;
         var prueba3;
 
-        var fondo;
-
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.7;
         var gameState ='';
@@ -249,7 +247,6 @@
             game.load.image('barco2', 'images/Barco2Solo.png');
             game.load.image('barco3', 'images/Barco3Solo.png');
             game.load.image('barco4', 'images/Barco4Solo.png');
-            game.load.image('sea', 'images/fondo.jpg');
         }
 
         function create() {
@@ -257,11 +254,6 @@
             gameState = PART_ONE;
             bmd = game.add.bitmapData(game.width, game.height);
 
-            //Distintas formas de cambiar el fondo
-            //game.stage.backgroundColor = "000000";
-            fondo = game.add.image(0,0, 'sea');
-            fondo.width = game.width;
-            fondo.height = game.height;
 
             flota = game.add.group();
 
