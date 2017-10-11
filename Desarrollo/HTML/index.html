@@ -8,12 +8,10 @@
 <body>
     <script type = "text/javascript">
         "use strict";
-
         var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         function Celda(x, y) {
             var posX;
             var posY;
@@ -23,20 +21,12 @@
             var colorA;
             var colorB;
 
-            var barco;
+            var barco = null;
 
             this.pintar = function(){
                 bmd.rect(rect.x-2, rect.y-2, rect.width+4, rect.height+4, colorB);
                 bmd.rect(rect.x+2, rect.y+2, rect.width-4, rect.height-4, colorA);
                 bmd.addToWorld();
-
-                /*
-                var graphics = game.add.graphics(0, 0);
-                graphics.lineStyle(6, colorB, 1);
-                graphics.beginFill(colorA);
-                graphics.drawRect(rect.x, rect.y, rect.width, rect.height); // coordenada X, coordenada Y, ancho y alto
-                graphics.endFill();
-                */
             };
 
             //Getters
@@ -161,24 +151,48 @@
                         var rect = this.getTablero()[i][j].getRect();
 
                         if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)) {
-                            barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero / 20));
-                            if(barco.getAngle() === 0){
-                                for(var v=0; v<barco.getCeldas();v++){
-                                    this.getTablero()[i][j+v].setBarco(barco);
-                                    console.log(this.getTablero()[i][j+v].getBarco());
+                            if (this.chechCasillasAdyacente(i,j,barco.getAngle(),barco.getCeldas())) {
+                                barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero / 20));
+
+                                if (barco.getAngle() === 0) {
+                                    for (var v = 0; v < barco.getCeldas(); v++) {
+                                        this.getTablero()[i][j + v].setBarco(barco);
+                                        barco.setPosParteBarco(i, j + v, v);
+                                    }
+                                } else if (barco.getAngle() === -90) {
+                                    for (var h = 0; h < barco.getCeldas() ; h++) {
+                                        this.getTablero()[i + h][j].setBarco(barco);
+                                        barco.setPosParteBarco(i + h, j, h);
+                                    }
                                 }
-                            }else if (barco.getAngle() === -90) {
-                                for (var h = 0; h < barco.getCeldas() ; h++) {
-                                    this.getTablero()[i+h][j].setBarco(barco);
-                                    console.log(this.getTablero()[i + h][j].getBarco());
-                                }
-                            }
+                                return true;
+                            }else
+                                return false;
+                        } 
                            
-                        }
+                        
                     }
 
 
                 }
+                return true;
+            }
+
+            this.chechCasillasAdyacente = function (x,y,angle,nzelda){
+                if (angle === 0){
+                    for(var v = 0; v <nzelda ; v++)
+                        if(this.getTablero()[x][y+v].getBarco() != null)
+                            return false;
+                }else{
+                    for(var v = 0; v <nzelda ; v++)
+                        if(this.getTablero()[x+v][y].getBarco() != null)
+                            return false;
+
+                }
+                return true;
+
+
+
             }
         };
 
@@ -195,6 +209,7 @@
         };
 
         function Barco(sprite, nceldas, x, y) {
+            var horizontal = false;
             var barco = game.add.sprite(x, y, sprite);
             barco.anchor.setTo(0.5,0.5/nceldas);    //colocamos el centro del sprite
             barco.width = anchoTablero / 10;
@@ -204,13 +219,21 @@
             barco.events.onInputDown.add(select, barco, 0, this);
             flota.add(barco);
             var partes = new Array(nceldas);
+            for (var i = 0; i < nceldas; i++) {
+                partes[i] = new PartesBarco();
+            }
             //funciones
             this.changePosition = function (x, y) {
                 barco.x = x;
                 barco.y = y;
             }
-            this.rotate = function (r) {
-                barco.angle = r;
+            this.rotate = function () {
+                if (horizontal)
+                    barco.angle = 0;
+                else
+                    barco.angle = -90;
+
+                horizontal = !horizontal;
             }
             //Getters y Setters
             this.getSprite = function () {
@@ -223,7 +246,42 @@
                 return nceldas;
             }
 
+            this.setPosParteBarco = function(x,y,indice){
+                partes[indice].setCelda(x,y);
+            }
+
+            this.exitZelda = function () {
+                for (var p in partes) {
+                    partes[p].SetCeldaToNone();
+                }
+            }
         };
+
+        
+
+        function PartesBarco() {
+            var x = null;
+            var y = null;
+            var Tocada = false;
+
+            this.setCelda = function (posX, posY) {
+                x = posX;
+                y = posY;
+            }
+
+            this.SetCeldaToNone = function () {
+                if (x != null)
+                    tableroAliado.getTablero()[x][y].setBarco(null);
+                x = null;
+                y = null;
+            }
+
+            this.ComprobarToque = function (posx, posy) {               
+                return Tocada = (posx=== x && posy === y);              
+                
+            }
+        }
+
 
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,40 +335,26 @@
             game.load.image('barco3', 'images/Barco3Solo.png');
             game.load.image('barco4', 'images/Barco4Solo.png');
             game.load.image('sea', 'images/fondo.jpg');
+           
         }
 
         function create() {
             //Para pintar los rect de las celdas
             gameState = PART_ONE;
             bmd = game.add.bitmapData(game.width, game.height);
-
             //Distintas formas de cambiar el fondo
             //game.stage.backgroundColor = "000000";
             fondo = game.add.image(0,0, 'sea');
             fondo.width = game.width;
             fondo.height = game.height;
-
             flota = game.add.group();
-
             tableroAliado = new TableroA();
             tableroEnemigo = new TableroE();
-
             tableroAliado.generar();
-            tableroEnemigo.generar();
-
-            
+            tableroEnemigo.generar();            
             prueba = new Barco('barco2', 2, 100, 100);
             prueba2 = new Barco('barco3', 3, 100, 200);
             prueba3 = new Barco('barco4', 4, 100, 300);
-
-            //codigo para meter los barcos en una variable que los agrupe
-           /* for (var i = 0; i < 1; i++) {
-                barco = flota.create(20, 20, 'barco2',i);
-                barco.inputEnabled = true;
-                barco.input.start(0, true);
-                barco.events.onInputDown.add(select);
-            }*/
-
             tableroAliado.pintar();
             tableroEnemigo.pintar();
 
@@ -319,53 +363,39 @@
         }
 
         function setBarcoCasilla(rect, Celda) {
-            console.log("pulsadacasilla")
             clicado.x = rect.x;
             clicado.y = rect.y;
 
         }
 
-
+        ///Funciones de evento
         function select(pointer,click,barco) {
             if (clicado === null) {
-                console.log("has clickado el barco");
                 clicado = barco;
+                clicado.exitZelda();
+
+
+
             }else
             {
-                tableroAliado.checkRectangle(clicado);
-                clicado = null;
+                if(tableroAliado.checkRectangle(clicado))
+                    clicado = null;
             }
 
-        }
-
+        }         
         function update() {
             game.world.bringToTop(flota);
             if (clicado !== null && gameState === PART_ONE) {
                 clicado.changePosition(game.input.x, game.input.y);
             }
             //rotaciones fijas de 90º
-            if (clicado !== null && Rotar.isDown && horizontal === false) {
-                if (!pulsado) {
-                    clicado.rotate(-90);
-                    horizontal = true;
-                    pulsado = true;
-                }
-
-            } else if (clicado !== null && Rotar.isDown && horizontal === true) {
-                if (!pulsado) {
-                    clicado.rotate(0);
-                    horizontal = false;
-                    pulsado = true;
-                }
-            }
-
+            if (clicado !== null && Rotar.isDown && !pulsado) {
+                    clicado.rotate();                    
+                    pulsado = true;              
+            }           
             if (Rotar.isUp)
                 pulsado = false;
-
         }
-
-
-
         //si se hace esto en la funcion de update no se renderiza
         function render(){
           
