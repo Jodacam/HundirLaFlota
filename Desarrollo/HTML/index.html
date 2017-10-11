@@ -151,7 +151,7 @@
                         var rect = this.getTablero()[i][j].getRect();
 
                         if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)) {
-                            if (this.chechCasillasAdyacente(i,j,barco.getAngle(),barco.getCeldas())) {
+                            if (this.checkCasillasAdyacente(i,j,barco.getAngle(),barco.getCeldas())) {
                                 barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero / 20));
 
                                 if (barco.getAngle() === 0) {
@@ -165,20 +165,21 @@
                                         barco.setPosParteBarco(i + h, j, h);
                                     }
                                 }
+
+                                //Comprobamos si todos los barcos se han colocado
+                                colocados();
+
                                 return true;
+
                             }else
                                 return false;
-                        } 
-                           
-                        
+                        }    
                     }
-
-
                 }
                 return true;
             }
 
-            this.chechCasillasAdyacente = function (x,y,angle,nzelda){
+            this.checkCasillasAdyacente = function (x,y,angle,nzelda){
                 if (angle === 0){
                     for(var v = 0; v <nzelda ; v++)
                         if(this.getTablero()[x][y+v].getBarco() != null)
@@ -187,7 +188,6 @@
                     for(var v = 0; v <nzelda ; v++)
                         if(this.getTablero()[x+v][y].getBarco() != null)
                             return false;
-
                 }
                 return true;
 
@@ -219,6 +219,9 @@
             barco.events.onInputDown.add(select, barco, 0, this);
             flota.add(barco);
             var partes = new Array(nceldas);
+
+            //var colocado = false;
+
             for (var i = 0; i < nceldas; i++) {
                 partes[i] = new PartesBarco();
             }
@@ -246,6 +249,17 @@
                 return nceldas;
             }
 
+            this.getColocado = function(){
+                var col = partes[0].getX() !== null;
+
+                return col;
+            }
+
+            /*
+            this.setColocado = function(x){
+                colocado = x;
+            }
+            */
             this.setPosParteBarco = function(x,y,indice){
                 partes[indice].setCelda(x,y);
             }
@@ -278,7 +292,10 @@
 
             this.ComprobarToque = function (posx, posy) {               
                 return Tocada = (posx=== x && posy === y);              
-                
+            }
+
+            this.getX = function(){
+                return x;
             }
         }
 
@@ -304,27 +321,31 @@
         var tableroEnemigo;
         var bmd;
         var lienzo;
-        //var barco;
+        
         //Grupo en el que colocar los barcos para visualizarlos sobre los tableros
         var flota;
+        //Grupo para asignar al barco clicado y que se muestre sobre los demás
+        var flotaClick;
 
         //variable para detectar si se ha clicado
+        //Va a almacenar el barco que lleves clicado
         var clicado = null;
 
         //variables para rotar
         var Rotar;
-        var horizontal = false;
+        //var horizontal = false;
         var pulsado = false;
 
         //variable barco
-        var prueba;
-        var prueba2;
-        var prueba3;
+        var arrayBarcos;
 
+        //Textos y fondo
+        var letreroAliado;
+        var letreroEnemigo;
         var fondo;
 
         var anchura = window.innerWidth/2;
-        var anchoTablero = anchura*0.7;
+        var anchoTablero = anchura*0.6;
         var gameState ='';
         const PART_ONE = "parte1";
         const PART_TWO = 'parte2';
@@ -335,6 +356,8 @@
             game.load.image('barco3', 'images/Barco3Solo.png');
             game.load.image('barco4', 'images/Barco4Solo.png');
             game.load.image('sea', 'images/fondo.jpg');
+            game.load.image('aliado', 'images/tablero_aliado.png');
+            game.load.image('enemigo', 'images/tablero_enemigo.png');
            
         }
 
@@ -342,49 +365,98 @@
             //Para pintar los rect de las celdas
             gameState = PART_ONE;
             bmd = game.add.bitmapData(game.width, game.height);
+
             //Distintas formas de cambiar el fondo
-            //game.stage.backgroundColor = "000000";
             fondo = game.add.image(0,0, 'sea');
             fondo.width = game.width;
             fondo.height = game.height;
+
+            //Crear grupo para mostrar los barcos por encima de los tableros
             flota = game.add.group();
+            flotaClick = game.add.group();
+
+            //Tableros
             tableroAliado = new TableroA();
             tableroEnemigo = new TableroE();
             tableroAliado.generar();
-            tableroEnemigo.generar();            
-            prueba = new Barco('barco2', 2, 100, 100);
-            prueba2 = new Barco('barco3', 3, 100, 200);
-            prueba3 = new Barco('barco4', 4, 100, 300);
+            tableroEnemigo.generar();
+
+            //Textos
+            letreroAliado = game.add.sprite(0, 0, 'aliado');
+            letreroAliado.anchor.setTo(0.5,0.5);
+            letreroAliado.width = anchoTablero /2;
+            letreroAliado.height = anchoTablero /2.2;
+            letreroAliado.x = anchura + anchoTablero/2;
+            letreroAliado.y = game.height/2 - (anchoTablero/2) - letreroAliado.height/2.5;
+
+            letreroEnemigo = game.add.sprite(0, 0, 'enemigo');
+            letreroEnemigo.anchor.setTo(0.5,0.5);
+            letreroEnemigo.width = anchoTablero /2;
+            letreroEnemigo.height = anchoTablero /2.2;
+            letreroEnemigo.x = anchura - anchoTablero/1.8;
+            letreroEnemigo.y = game.height/2 - (anchoTablero/2) - letreroAliado.height/2.5;
+
+            //Barcos
+            arrayBarcos = new Array(6);
+            arrayBarcos[0] = new Barco('barco2', 2, 50, 100);
+            arrayBarcos[1] = new Barco('barco2', 2, 50, 250);
+            arrayBarcos[2] = new Barco('barco3', 3, 50, 500);
+            arrayBarcos[3] = new Barco('barco3', 3, 50, 700);
+            arrayBarcos[4] = new Barco('barco4', 4, game.width - 65, 100);
+            arrayBarcos[5] = new Barco('barco4', 4, game.width - 65, 400);
+
+            //Pintar tableros
             tableroAliado.pintar();
             tableroEnemigo.pintar();
 
             //Asignación de tecla para rotación
             Rotar = game.input.keyboard.addKey(Phaser.Keyboard.R);
+
+            game.world.bringToTop(flota);
+            game.world.bringToTop(flotaClick);
         }
 
+/*
         function setBarcoCasilla(rect, Celda) {
             clicado.x = rect.x;
             clicado.y = rect.y;
 
         }
+        */
 
         ///Funciones de evento
+        //No se corresponden con los parámetros de entrada
         function select(pointer,click,barco) {
             if (clicado === null) {
                 clicado = barco;
                 clicado.exitZelda();
 
+                flotaClick.add(pointer);
 
-
-            }else
-            {
-                if(tableroAliado.checkRectangle(clicado))
+            }else {
+                if(tableroAliado.checkRectangle(clicado)){
                     clicado = null;
+                    flota.add(pointer);
+                }
             }
 
-        }         
+        }
+
+        function colocados(){
+            var col = true;
+
+            for(var i = 0; i < arrayBarcos.length && col; i++){
+                col = arrayBarcos[i].getColocado();
+            }
+            
+            if(col){
+                //Mostrar botón empezar segunda parte////////////////////////////////////////////////
+                console.log("Peneh");
+            }
+        }
+
         function update() {
-            game.world.bringToTop(flota);
+            
             if (clicado !== null && gameState === PART_ONE) {
                 clicado.changePosition(game.input.x, game.input.y);
             }
