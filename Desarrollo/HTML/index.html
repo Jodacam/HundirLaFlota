@@ -23,6 +23,8 @@
             var colorA;
             var colorB;
 
+            var barco;
+
             this.pintar = function(){
                 bmd.rect(rect.x-2, rect.y-2, rect.width+4, rect.height+4, colorB);
                 bmd.rect(rect.x+2, rect.y+2, rect.width-4, rect.height-4, colorA);
@@ -58,6 +60,10 @@
                 return rect;
             };
 
+            this.getBarco = function(){
+                return barco;
+            };
+
             //Setters
             this.setPosX = function(x){
                 posX = x;
@@ -78,6 +84,10 @@
             this.setRect = function(){
                 rect = new Phaser.Rectangle(posX, posY, anchoTablero / 10, anchoTablero / 10);
                 
+            };
+
+            this.setBarco = function (barca) {
+                barco = barca;
             };
         };
 
@@ -151,7 +161,19 @@
                         var rect = this.getTablero()[i][j].getRect();
 
                         if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)) {
-                            barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero/20));
+                            barco.changePosition(rect.x + (anchoTablero / 20), rect.y + (anchoTablero / 20));
+                            if(barco.getAngle() === 0){
+                                for(var v=0; v<barco.getCeldas();v++){
+                                    this.getTablero()[i][j+v].setBarco(barco);
+                                    console.log(this.getTablero()[i][j+v].getBarco());
+                                }
+                            }else if (barco.getAngle() === -90) {
+                                for (var h = 0; h < barco.getCeldas() ; h++) {
+                                    this.getTablero()[i+h][j].setBarco(barco);
+                                    console.log(this.getTablero()[i + h][j].getBarco());
+                                }
+                            }
+                           
                         }
                     }
 
@@ -194,7 +216,12 @@
             this.getSprite = function () {
                 return barco;
             }
-
+            this.getAngle = function(){
+                return barco.angle;
+            }
+            this.getCeldas = function(){
+                return nceldas;
+            }
 
         };
 
@@ -219,7 +246,7 @@
         var tableroEnemigo;
         var bmd;
         var lienzo;
-        var barco;
+        //var barco;
         //Grupo en el que colocar los barcos para visualizarlos sobre los tableros
         var flota;
 
@@ -231,7 +258,7 @@
         var horizontal = false;
         var pulsado = false;
 
-        //variable del barco
+        //variable barco
         var prueba;
         var prueba2;
         var prueba3;
