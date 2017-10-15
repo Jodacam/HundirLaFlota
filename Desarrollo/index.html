@@ -296,6 +296,14 @@
                     partes[p].SetCeldaToNone();
                 }
             }
+            this.ComprobarPartes = function(i,j){
+
+                for (var p in partes) {
+                    if (partes[p].ComprobarToque(i, j))
+                        return true;
+                }
+                return false;
+            }
         };
 
         
@@ -318,7 +326,10 @@
             }
 
             this.ComprobarToque = function (posx, posy) {               
-                return Tocada = (posx=== x && posy === y);              
+                if (!Tocada)
+                    return Tocada = (posx === x && posy === y);
+                else
+                    return false;
             }
 
             this.getX = function(){
@@ -536,7 +547,10 @@
 
         //Esto es una prueba
         function ComprobarEnemigo(i, j) {
-            return i === 3;
+            if (tableroAliado.getTablero()[i][j].getBarco() != null) {
+                return tableroAliado.getTablero()[i][j].getBarco().ComprobarPartes(i,j);
+            }
+            return false;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
