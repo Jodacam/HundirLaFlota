@@ -317,6 +317,10 @@
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         var tableroAliado;
         var tableroEnemigo;
         var bmd;
@@ -344,6 +348,9 @@
         var letreroEnemigo;
         var fondo;
 
+        //Botones
+        var button1;
+
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.6;
         var gameState ='';
@@ -358,6 +365,7 @@
             game.load.image('sea', 'images/fondo.jpg');
             game.load.image('aliado', 'images/tablero_aliado.png');
             game.load.image('enemigo', 'images/tablero_enemigo.png');
+            game.load.image('boton1', 'images/Boton1.png');
            
         }
 
@@ -405,6 +413,17 @@
             arrayBarcos[4] = new Barco('barco4', 4, game.width - 65, 100);
             arrayBarcos[5] = new Barco('barco4', 4, game.width - 65, 400);
 
+            //Botones
+            button1 = game.add.button(0, 0, 'boton1', function(){ gameState = PART_TWO; game.world.remove(button1); }, this);
+            button1.anchor.setTo(0.5,0.5);
+            button1.height = anchoTablero/4;
+            button1.width = anchoTablero/2;
+            button1.y = game.height/2 + anchoTablero/1.5;
+            button1.x = anchura;
+            button1.visible = false;
+            
+            //flota.add(button1);
+
             //Pintar tableros
             tableroAliado.pintar();
             tableroEnemigo.pintar();
@@ -416,27 +435,23 @@
             game.world.bringToTop(flotaClick);
         }
 
-/*
-        function setBarcoCasilla(rect, Celda) {
-            clicado.x = rect.x;
-            clicado.y = rect.y;
-
-        }
-        */
-
         ///Funciones de evento
         //No se corresponden con los parámetros de entrada
         function select(pointer,click,barco) {
-            if (clicado === null) {
-                clicado = barco;
-                clicado.exitZelda();
+            button1.visible = false;
 
-                flotaClick.add(pointer);
+            if(gameState === PART_ONE){
+                if (clicado === null) {
+                    clicado = barco;
+                    clicado.exitZelda();
 
-            }else {
-                if(tableroAliado.checkRectangle(clicado)){
-                    clicado = null;
-                    flota.add(pointer);
+                    flotaClick.add(pointer);
+
+                }else {
+                    if(tableroAliado.checkRectangle(clicado)){
+                        clicado = null;
+                        flota.add(pointer);
+                    }
                 }
             }
 
@@ -452,21 +467,24 @@
             if(col){
                 //Mostrar botón empezar segunda parte////////////////////////////////////////////////
                 console.log("Peneh");
+                button1.visible = true;
             }
         }
 
         function update() {
             
-            if (clicado !== null && gameState === PART_ONE) {
-                clicado.changePosition(game.input.x, game.input.y);
+            if(gameState === PART_ONE){
+                if (clicado !== null /*&& gameState === PART_ONE*/) {
+                    clicado.changePosition(game.input.x, game.input.y);
+                }
+                //rotaciones fijas de 90º
+                if (clicado !== null && Rotar.isDown && !pulsado) {
+                        clicado.rotate();                    
+                        pulsado = true;              
+                }           
+                if (Rotar.isUp)
+                        pulsado = false;
             }
-            //rotaciones fijas de 90º
-            if (clicado !== null && Rotar.isDown && !pulsado) {
-                    clicado.rotate();                    
-                    pulsado = true;              
-            }           
-            if (Rotar.isUp)
-                pulsado = false;
         }
         //si se hace esto en la funcion de update no se renderiza
         function render(){
