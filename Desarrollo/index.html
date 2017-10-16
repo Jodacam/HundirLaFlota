@@ -90,10 +90,20 @@
             var offsetX = (game.width) / 2 + 40;
             var offsetY = (game.height - anchoTablero) / 2;
 
+            var marcado = false;
+
             this.setPosX(x + offsetX);
             this.setPosY(y + offsetY);
 
             this.setRect();
+
+            this.getMarcado = function () {
+                return marcado;
+            }
+
+            this.setMarcado = function (mecagoendios) {
+                marcado = mecagoendios;
+            }
         };
 
         function CeldaE(x, y){
@@ -105,10 +115,20 @@
             var offsetX = (game.width - anchoTablero * 2) / 2 - 40;
             var offsetY = (game.height - anchoTablero) / 2;
 
+            var marcado = false;
+
             this.setPosX(x + offsetX);
             this.setPosY(y + offsetY);
 
-            this.setRect();            
+            this.setRect();  
+            
+            this.getMarcado = function(){
+                return marcado;
+            }
+
+            this.setMarcado = function (mecagoendios) {
+                marcado = mecagoendios;
+            }
         };
 
 
@@ -135,7 +155,7 @@
 
         function TableroA(){
             Tablero.call(this);
-
+            var that = this;
             this.generar = function(){
                 for (var i = 0; i < 10; i++){
                     for (var j = 0; j < 10; j++){
@@ -192,6 +212,38 @@
                 return true;
 
             }
+
+            this.checkRectangleIA = function () {
+                do{
+                    var i = Math.floor(Math.random() * 10);
+                    var j = Math.floor(Math.random() * 10);
+
+                    var casilla = that.getTablero()[i][j];
+                    var rect = casilla.getRect();
+
+                    if (!casilla.getMarcado()) {
+
+                        //Aqui iria la funcion que manda las coordenadas del Input y dependiendo de si hemos acertado o no, nos devolvera un true o false
+                        if (ComprobarEnemigoIA(i, j)) {
+                            //Funcion que pone en verde la casilla si hemos acertado
+                            var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
+                            sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                            sprite.width = anchoTablero / 10;
+                            sprite.height = (anchoTablero / 10);
+
+                        } else {
+                            var sprite = game.add.sprite(rect.centerX, rect.centerY, 'fallo');
+                            sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                            sprite.width = anchoTablero / 10;
+                            sprite.height = (anchoTablero / 10);
+
+                        }
+                        
+                    }
+                } while (casilla.getMarcado());
+                gameState = PART_TWO;
+                casilla.setMarcado(true);
+            }
         };
 
         function TableroE(){
@@ -209,8 +261,10 @@
                 for (var i = 0; i < this.getTablero().length; i++) {
                     for (var j = 0; j < this.getTablero()[i].length; j++) {
 
-                        var rect = this.getTablero()[i][j].getRect();
-                        if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y)){
+                        var casilla = this.getTablero()[i][j];
+                        var rect = casilla.getRect();
+                        
+                        if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y) && !casilla.getMarcado()) {
 
                             //Aqui iria la funcion que manda las coordenadas del Input y dependiendo de si hemos acertado o no, nos devolvera un true o false
                             if (ComprobarEnemigo(i,j)){
@@ -227,11 +281,16 @@
                                 sprite.height = (anchoTablero / 10);
 
                             }
+                            casilla.setMarcado(true);
+                            gameState = WAIT;
+                            setTimeout(tableroAliado.checkRectangleIA, 1000);
+                            return true;
                         }
 
 
                     }
                 }
+
             }
         };
 
@@ -457,7 +516,7 @@
             arrayBarcos[5] = new Barco('barco4', 4, game.width - 65, 400);
 
             //Botones
-            button1 = game.add.button(0, 0, 'boton1', function(){ gameState = PART_TWO; game.world.remove(button1); }, this);
+            button1 = game.add.button(0, 0, 'boton1', function () { gameState = PART_TWO; game.world.remove(button1); startPart2(); }, this);
             button1.anchor.setTo(0.5,0.5);
             button1.height = anchoTablero/4;
             button1.width = anchoTablero/2;
@@ -477,8 +536,10 @@
             game.world.bringToTop(flota);
             game.world.bringToTop(flotaClick);
             jQuery(document).click(function () {
-                if(gameState === PART_TWO)
-                     tableroEnemigo.checkRectangle();
+                if (gameState === PART_TWO) {
+                    tableroEnemigo.checkRectangle();
+
+                }
             })
         }
 
@@ -539,8 +600,11 @@
           
             
         }
-            //Funcion solo para la parte sin red, rellena el tablero enemigo de barcos para comprobar.
-        function startPart2(){
+        //Funcion solo para la parte sin red, rellena el tablero enemigo de barcos para comprobar.
+        var tableroIA = new TableroA();
+
+        function startPart2() {
+            tableroIA = Object.assign({}, tableroAliado);
 
         }
 
@@ -549,6 +613,13 @@
         function ComprobarEnemigo(i, j) {
             if (tableroAliado.getTablero()[i][j].getBarco() != null) {
                 return tableroAliado.getTablero()[i][j].getBarco().ComprobarPartes(i,j);
+            }
+            return false;
+        }
+
+        function ComprobarEnemigoIA(i, j) {
+            if (tableroIA.getTablero()[i][j].getBarco() != null) {
+                return tableroIA.getTablero()[i][j].getBarco().ComprobarPartes(i, j);
             }
             return false;
         }
