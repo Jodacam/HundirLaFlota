@@ -2,36 +2,20 @@
 <head>
     <meta charset="UTF-8" />
     <title>HLF Online</title>
+    <link rel="stylesheet" href="CSS/estilos.css">
     <script type="text/javascript" src="JavaScript/phaser.js"></script>
     <script type="text/javascript" src="JavaScript/jquery-3.2.1.js"></script>
-    <style type="text/css">
-        #button {            
-             position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-
-         
-        }
-        #fondo{
-            width:100%;
-            height:100%;
-            position:absolute;
-            z-index:-1;
-            top:0;
-            left:0;
-        }
-    </style>
 </head>
 <body background ="images/fondo.jpg">
     <img id="fondo" src="images/fondo.jpg"/>
     <div id="button">
-        <form action="Juego.html"  valing="middle" aling="center">
-            <button type="submit" />Comenzar a Jugar</button>
+        <form action="Juego.html">
+            <button class="boton" type="submit" />Comenzar a Jugar</button>
         </form>
-    </divid="button">
-  
-
+        <form>
+            <button type=submit class="boton2" onclick="window.close()" />Salir</button>
+        </form>
+    </div>
 </body>
 
 </html>
