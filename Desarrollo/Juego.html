@@ -8,6 +8,8 @@
 <body>
     <script type = "text/javascript">
         "use strict";
+        var fallos = 0;
+        var acierto = 0;
         var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,6 +248,8 @@
 
                 if(ahogarIA === 0){
                     gameState = LOSE;
+                    var puntuacion = (acierto - fallos) * 100;
+                    game.add.text(16, window.innerHeight-100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
                 } else{
                     gameState = PART_TWO;   
                 }
@@ -279,7 +283,7 @@
                                 sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
                                 sprite.width = anchoTablero / 10;
                                 sprite.height = (anchoTablero / 10);
-
+                                acierto++;
                                 ahogar -= 1;
 
                                 if(ahogar === 0){
@@ -291,12 +295,15 @@
                                 sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
                                 sprite.width = anchoTablero / 10;
                                 sprite.height = (anchoTablero / 10);
+                                fallos++;
 
                             }
                             casilla.setMarcado(true);
 
                             if(ahogar === 0){
                                 gameState = WIN;
+                                var puntuacion = (acierto - fallos) * 100;
+                                game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
                             } else{
                             gameState = WAIT;   
                             setTimeout(tableroAliado.checkRectangleIA, 600);
@@ -454,7 +461,7 @@
         var tableroEnemigo;
         var bmd;
         var lienzo;
-        
+       
         //Grupo en el que colocar los barcos para visualizarlos sobre los tableros
         var flota;
         //Grupo para asignar al barco clicado y que se muestre sobre los demás
