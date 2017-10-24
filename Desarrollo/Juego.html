@@ -491,6 +491,7 @@
         //Botones
         var button1;
         var button2;
+        var button3;
 
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.6;
@@ -509,6 +510,8 @@
             game.load.image('aliado', 'images/tablero_aliado.png');
             game.load.image('enemigo', 'images/tablero_enemigo.png');
             game.load.image('boton1', 'images/Boton1.png');
+            game.load.image('boton2', 'images/Boton2.png');
+            game.load.image('boton3', 'images/Boton3.png');
             game.load.image('acierto', 'images/acierto.png');
             game.load.image('fallo', 'images/fallo.png');
            
@@ -575,7 +578,7 @@
             button1.visible = false;
 
             //Boton reinicio
-            button2 = game.add.button(0, 0, 'boton1', function () { game.world.remove(button2); restart(); }, this);
+            button2 = game.add.button(0, 0, 'boton2', function () { game.world.remove(button2); restart(); }, this);
             button2.anchor.setTo(0.5,0.5);
             button2.height = anchoTablero/4;
             button2.width = anchoTablero/2;
@@ -583,6 +586,15 @@
             button2.x = anchura;
             button2.visible = false;
             
+            //Boton parra salir al menú
+            button3 = game.add.button(0, 0, 'boton3', function () { game.world.remove(button3); load(); }, this);
+            button3.anchor.setTo(0.5,0.5);
+            button3.height = anchoTablero/4;
+            button3.width = anchoTablero/2;
+            button3.y = game.height/1.8 + anchoTablero/1.5;
+            button3.x = anchura;
+            button3.visible = false;
+
             //flota.add(button1);
 
             //Pintar tableros
@@ -604,6 +616,10 @@
 
         function restart(){
             location.reload();
+        }
+
+        function load(){
+            location.replace("index.html")
         }
 
         ///Funciones de evento
@@ -638,7 +654,6 @@
             
             if(col){
                 //Mostrar botón empezar segunda parte////////////////////////////////////////////////
-                console.log("Peneh");
                 button1.visible = true;
             }
         }
@@ -660,10 +675,12 @@
 
             if(gameState === WIN){
                 button2.visible = true;
+                button3.visible = true;
             }
 
             if(gameState === LOSE){
                 button2.visible = true;
+                button3.visible = true;
             }
         }
         //si se hace esto en la funcion de update no se renderiza
