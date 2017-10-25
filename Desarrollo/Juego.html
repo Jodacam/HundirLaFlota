@@ -501,6 +501,8 @@
         //Textos y fondo
         var letreroAliado;
         var letreroEnemigo;
+        var letreroR;
+        var letreroI;
         var fondo;
 
         //Cuenta de barcos que quedan
@@ -533,7 +535,8 @@
             game.load.image('boton3', 'images/Boton3.png');
             game.load.image('acierto', 'images/acierto.png');
             game.load.image('fallo', 'images/fallo.png');
-           
+            game.load.image('info1', 'images/PressR.png');
+            game.load.image('info2', 'images/TextTableroIndi.png');
         }
 
         function create() {
@@ -570,6 +573,20 @@
             letreroEnemigo.height = anchoTablero /2.2;
             letreroEnemigo.x = anchura - anchoTablero/1.8;
             letreroEnemigo.y = game.height/2 - (anchoTablero/2) - letreroAliado.height/2.5;
+
+            letreroR = game.add.sprite(0, 0, 'info1');
+            letreroR.anchor.setTo(0.5,0.5);
+            letreroR.width = anchoTablero /2.5;
+            letreroR.height = anchoTablero /4.7;
+            letreroR.x = anchura - anchoTablero*1.2 - 40;
+            letreroR.y = 200;
+
+            letreroI = game.add.sprite(0, 0, 'info2');
+            letreroI.anchor.setTo(0.5,0.5);
+            letreroI.width = anchoTablero /2.5;
+            letreroI.height = anchoTablero /5.2;
+            letreroI.x = anchura - anchoTablero*1.2 - 40;
+            letreroI.y = 630;
 
             //Barcos
             arrayBarcos = new Array(6);
