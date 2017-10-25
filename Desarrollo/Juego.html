@@ -30,7 +30,11 @@
                 bmd.rect(rect.x+2, rect.y+2, rect.width-4, rect.height-4, colorA);
                 bmd.addToWorld();
             };
-
+            this.pintarHundidos = function () {              
+                bmd.rect(rect.x - 2, rect.y - 2, rect.width + 4, rect.height + 4, colorB);
+                bmd.rect(rect.x + 2, rect.y + 2, rect.width - 4, rect.height - 4, colorA);
+                bmd.addToWorld();
+            }
             //Getters
             this.getPosX = function(){
                 return posX;
@@ -230,7 +234,7 @@
                             sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
                             sprite.width = anchoTablero / 10;
                             sprite.height = (anchoTablero / 10);
-
+                            flota.add(sprite);
                             ahogarIA = ahogarIA - 1;
 
                         } else {
@@ -238,7 +242,7 @@
                             sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
                             sprite.width = anchoTablero / 10;
                             sprite.height = (anchoTablero / 10);
-
+                            flota.add(sprite);
                         }
                         
                     }
@@ -285,7 +289,7 @@
                                 sprite.height = (anchoTablero / 10);
                                 acierto++;
                                 ahogar -= 1;
-
+                                flota.add(sprite);
                                 if(ahogar === 0){
                                     gameState = "win";
                                 }
@@ -296,6 +300,7 @@
                                 sprite.width = anchoTablero / 10;
                                 sprite.height = (anchoTablero / 10);
                                 fallos++;
+                                flota.add(sprite);
 
                             }
                             casilla.setMarcado(true);
@@ -303,7 +308,7 @@
                             if(ahogar === 0){
                                 gameState = WIN;
                                 var puntuacion = (acierto - fallos) * 100;
-                                game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
+                                game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#ffffff' });
                             } else{
                             gameState = WAIT;   
                             setTimeout(tableroAliado.checkRectangleIA, 600);
@@ -327,6 +332,7 @@
             barco.events.onInputDown.add(select, barco, 0, this);
             flota.add(barco);
             var numCel = nceldas;
+            var partesViva = numCel;
             var partes = new Array(numCel);
 
             //var colocado = false;
@@ -379,8 +385,17 @@
             this.ComprobarPartes = function(i,j){
 
                 for (var p in partes) {
-                    if (partes[p].ComprobarToque(i, j))
+                    if (partes[p].ComprobarToque(i, j)) {
+                        partesViva--;
+                        if (partesViva === 0) {
+                            for (var t in partes) {
+                                partes[t].CambiarColor("#ffff00");
+                                game.world.bringToTop(flota);
+                            }
+                        }
                         return true;
+
+                    }
                 }
                 return false;
             }
@@ -432,6 +447,10 @@
                     return TocadoIA = (posx === x && posy === y);
                 else
                     return false;
+            }
+            this.CambiarColor = function (color) {
+                tableroEnemigo.getTablero()[x][y].setColorA(color);
+                tableroEnemigo.getTablero()[x][y].pintarHundidos();
             }
         }
 
@@ -582,7 +601,7 @@
             button2.anchor.setTo(0.5,0.5);
             button2.height = anchoTablero/4;
             button2.width = anchoTablero/2;
-            button2.y = game.height/2 + anchoTablero/1.5;
+            button2.y = game.height/2.1 + anchoTablero/1.5;
             button2.x = anchura;
             button2.visible = false;
             
