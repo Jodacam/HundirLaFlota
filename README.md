@@ -50,4 +50,4 @@ Corresponde al final de la "Fase 1", apareciendo un botón que da inicio a la "F
 ![Pantalla5](/Diagrama/Captura5.PNG "Pantalla 5")
 ![Pantalla6](/Diagrama/Captura6.PNG "Pantalla 6")
 Ambas pantallas muestran el fin de la "Fase 2", ya corresponda la victoria al jugador o a la IA. Esto se indicará con un mensaje en la esquina inferior izquierda, junto con los puntos obtenidos en esta partida. Dos botones acompañan a estas pantallas: El primero para dar comienzo de nuevo al juego (Pantalla 3), y el segundo para regresar al menú (Pantalla 1).   
-![Diagrama](/Diagrama/Diagrama JR.png "Diagrama")
+![Diagrama](/Diagrama/Diagrama_JR.png "Diagrama")
