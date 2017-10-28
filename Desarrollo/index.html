@@ -6,6 +6,7 @@
 </head>
 <body background ="images/fondo.jpg">
     <img id="fondo" src="images/fondo.jpg"/>
+    <audio id="music" src="Sounds/Danger_Storm.mp3" autoplay loop></audio>
     <div id="button">
         <form action="Juego.html">
             <button class="boton" type="submit" />Comenzar a Jugar</button>
@@ -14,6 +15,11 @@
             <button type=submit class="boton"/>Revisar Puntuaciones</button>
         </form>
     </div>
+
+    <script type="text/javascript">
+        var sound = document.getElementById("music");
+        sound.volume = 0.2;
+    </script>
 </body>
 
 </html>
