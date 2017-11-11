@@ -1,10 +1,11 @@
-# HLF Online
+﻿# HLF Online
 ___
 ## Índice
 1. Desarrolladores y Créditos
 2. Descripción del Juego
 3. Funcionamiento en el Cliente
-4. Funcionamiento en el lado del Servidor
+4. Funcionamiento en el lado del Servidor  
+5. Diagrama de Juego
 ___
 ## 1 Desarrolladores y Créditos
 #### Pablo Rodríguez  
@@ -36,5 +37,17 @@ ___
 Los jugadores enviarán y recibirán datos entre ellos. Al final de la primera fase del juego los dos jugadores esperarán la señal del servidor de que los dos jugadores han confirmado sus tableros.
 Después del turno de cada jugador, se enviarán los datos de la posicion del disparo que recibirá el otro jugador, que devolvera si ha acertado o no pasando a ser su turno.
 Tambien se implementará un chat para conversar entre ellos.
-
-
+___
+## 5 Diagrama de Juego
+![Pantalla1](/Diagrama/Captura.PNG "Pantalla 1")
+La primera pantalla que encontrará el usuario constará de un menú, donde podrá elegir entre iniciar el juego (Pantalla 3) o revisar la table de puntuaciones (Pantalla 2). Esta pantalla irá acompañada de la canción "Danger Storm - Kevin Macleod".   
+![Pantalla2](/Diagrama/Captura2.PNG "Pantalla 2")
+Una de las pantallas accesibles desde el menú es la tabla de puntuaciones que se obtienen al final de cada partida. Incluye un botón para regresar a la pantalla menú (Pantalla 1).   
+![Pantalla3](/Diagrama/Captura3.PNG "Pantalla 3")
+Consta del escenario inicial de juego, que corresponde a la "Fase 1". El jugador deberá colocar sus barcos en el tablero correspondiente, pudiendo rotarlos con la tecla "R", tal como se le indica con diversos textos. Esta y las siguientes pantallas van acompañadas de la canción "Crossing the Chasm - Kevin Macleod".   
+![Pantalla4](/Diagrama/Captura4.PNG "Pantalla 4")
+Corresponde al final de la "Fase 1", apareciendo un botón que da inicio a la "Fase 2", donde el jugador deberá hacer click sobre el tablero enemigo para eliminar sus barcos, a la vez que una IA trata de acabar con su flota. Puede desembocar en victoria (Pantalla 5) o derrota (Pantalla 6).   
+![Pantalla5](/Diagrama/Captura5.PNG "Pantalla 5")
+![Pantalla6](/Diagrama/Captura6.PNG "Pantalla 6")
+Ambas pantallas muestran el fin de la "Fase 2", ya corresponda la victoria al jugador o a la IA. Esto se indicará con un mensaje en la esquina inferior izquierda, junto con los puntos obtenidos en esta partida. Dos botones acompañan a estas pantallas: El primero para dar comienzo de nuevo al juego (Pantalla 3), y el segundo para regresar al menú (Pantalla 1).   
+![Diagrama](/Diagrama/DiagramaJR.PNG "Diagrama")
