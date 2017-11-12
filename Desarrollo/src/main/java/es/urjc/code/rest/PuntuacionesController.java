@@ -21,12 +21,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Comparator;
+import org.springframework.http.HttpStatus;
 @RestController
 public class PuntuacionesController {
    Gson JsonMapper = new Gson();
    Puntuaciones[] listp = new Puntuaciones[11];
     @RequestMapping(value = "/getPuntuacion", method = RequestMethod.GET)
-    public Puntuaciones[] GetPuntuaciones() throws FileNotFoundException, IOException{                        
+    public String GetPuntuaciones() throws FileNotFoundException, IOException{                        
         if ( listp[0] == null ) 
         {
         File archivo = new File ("Puntuaciones.json");
@@ -35,11 +36,11 @@ public class PuntuacionesController {
         listp =  JsonMapper.fromJson(br, Puntuaciones[].class);               
         }
                
-        return listp ;
+        return JsonMapper.toJson(listp);
     }
     
     @RequestMapping(value = "/setPuntuacion", method = RequestMethod.POST)
-    public void AddPuntuacion(Puntuaciones puntos) throws FileNotFoundException, IOException{
+    public void AddPuntuacion(@RequestBody String puntos) throws FileNotFoundException, IOException{
       if ( listp[0] == null ) 
         {
         File archivo = new File ("Puntuaciones.json");
@@ -48,7 +49,8 @@ public class PuntuacionesController {
         listp =  JsonMapper.fromJson(br, Puntuaciones[].class);               
         }
         
-        listp[10] = puntos;
+      Puntuaciones  d =JsonMapper.fromJson(puntos, Puntuaciones.class);
+        listp[10] = d;
         
         for (int i = 0; i< listp.length-1;i++){
             for (int j = i+1; j< listp.length; j++){
@@ -66,7 +68,7 @@ public class PuntuacionesController {
         FileWriter writer = new FileWriter(archivo);
         PrintWriter pw = new PrintWriter(writer);
         pw.print(dataText);
-        
+        pw.close();
         
         
     }
