@@ -11,18 +11,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class RestEjem1bApplication {
-static Gson JsonMapper = new Gson();
-static Puntuaciones[] listp = new Puntuaciones[11];
-public static void main(String[] args) throws IOException {
-            
-           
-		
+
+    public static void main(String[] args) throws IOException {	
         
         SpringApplication app = new SpringApplication(RestEjem1bApplication.class);
-                Properties properties = new Properties();
-               properties.setProperty("spring.resources.staticLocations",
+            Properties properties = new Properties();
+            properties.setProperty("spring.resources.staticLocations",
                                        "classpath:/static/");
-               app.setDefaultProperties(properties);
-             app.run(args);
+            app.setDefaultProperties(properties);
+            app.run(args);
 	}
 }

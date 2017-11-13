@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package es.urjc.code.rest;
 
-/**
- *
- * @author jd.campos
- */
 import java.*;
 import java.util.LinkedList;
 import org.springframework.web.bind.annotation.*;
@@ -21,57 +12,49 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Comparator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+
 @RestController
 public class PuntuacionesController {
    Gson JsonMapper = new Gson();
-   Puntuaciones[] listp = new Puntuaciones[11];
-    @RequestMapping(value = "/getPuntuacion", method = RequestMethod.GET)
-    public String GetPuntuaciones() throws FileNotFoundException, IOException{                        
-        if ( listp[0] == null ) 
-        {
-        File archivo = new File ("Puntuaciones.json");
-        FileReader fr = new FileReader (archivo);
-        BufferedReader br = new BufferedReader(fr);        
-        listp =  JsonMapper.fromJson(br, Puntuaciones[].class);               
+   //Puntuaciones[] listp = new Puntuaciones[11];
+   @Autowired
+   public Puntuaciones puntuaciones;
+   
+   @RequestMapping(value = "/getPuntuacion", method = RequestMethod.GET)
+   public Puntuacion[] GetPuntuaciones() throws FileNotFoundException, IOException{                        
+        if (puntuaciones.getPuntuaciones()[0] == null ){
+            File archivo = new File ("Puntuaciones.json");
+            FileReader fr = new FileReader (archivo);
+            BufferedReader br = new BufferedReader(fr);        
+            puntuaciones.setPuntuaciones(JsonMapper.fromJson(br, Puntuacion[].class));              
         }
                
-        return JsonMapper.toJson(listp);
+        //return JsonMapper.toJson(listp);
+        return puntuaciones.getPuntuaciones();
     }
-    
-    @RequestMapping(value = "/setPuntuacion", method = RequestMethod.POST)
-    public void AddPuntuacion(@RequestBody String puntos) throws FileNotFoundException, IOException{
-      if ( listp[0] == null ) 
-        {
-        File archivo = new File ("Puntuaciones.json");
-        FileReader fr = new FileReader (archivo);
-        BufferedReader br = new BufferedReader(fr);        
-        listp =  JsonMapper.fromJson(br, Puntuaciones[].class);               
+   
+   @RequestMapping(value = "/setPuntuacion", method = RequestMethod.POST)
+   public void AddPuntuacion(@RequestBody String puntos) throws FileNotFoundException, IOException{
+        if (puntuaciones.getPuntuaciones()[0] == null ){
+            File archivo = new File ("Puntuaciones.json");
+            FileReader fr = new FileReader (archivo);
+            BufferedReader br = new BufferedReader(fr);        
+            puntuaciones.setPuntuaciones(JsonMapper.fromJson(br, Puntuacion[].class));               
         }
         
-      Puntuaciones  d =JsonMapper.fromJson(puntos, Puntuaciones.class);
-        listp[10] = d;
+        Puntuacion y  = JsonMapper.fromJson(puntos, Puntuacion.class);
         
-        for (int i = 0; i< listp.length-1;i++){
-            for (int j = i+1; j< listp.length; j++){
-            if (listp[j].getPuntacion() > listp[i].getPuntacion()){
-            Puntuaciones p = listp[j];
-            listp[j] = listp[i];
-            listp[i] = p;
-                
-            }
-            }
-        }
+        puntuaciones.setNum(10, y);
         
-        String dataText = JsonMapper.toJson(listp);
+        puntuaciones.order();
+        
+        String dataText = JsonMapper.toJson(puntuaciones);
         File archivo = new File ("Puntuaciones.json");
         FileWriter writer = new FileWriter(archivo);
         PrintWriter pw = new PrintWriter(writer);
         pw.print(dataText);
         pw.close();
-        
-        
     }
-    
-    
 }

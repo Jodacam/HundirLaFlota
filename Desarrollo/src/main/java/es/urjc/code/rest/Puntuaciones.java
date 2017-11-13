@@ -5,34 +5,38 @@
  */
 package es.urjc.code.rest;
 import java.*;
+import org.springframework.stereotype.Component;
 /**
  *
  * @author jd.campos
  */
+@Component
 public class Puntuaciones {
+    private Puntuacion[] puntuaciones = new Puntuacion[11];
     
-    private String Name;
-    private int Puntuacion;
-    
-    public Puntuaciones(){}
-    
-    public Puntuaciones(String name, int puntuacion){
-    this.Name = name;
-    this.Puntuacion = puntuacion;
-    }
-            
-    public void setName(String name){
-    this.Name = name;
-    }
-    public void setPuntuacion (int puntos){
-    this.Puntuacion = puntos;
-    }
-    public String getName(){
-        return this.Name;
-    }
-    public int getPuntacion(){
-        return this.Puntuacion;
+    public Puntuacion[] getPuntuaciones(){
+        return this.puntuaciones;
     }
     
+    public void setPuntuaciones(Puntuacion[] x){
+        for(int i = 0; i < 11; i++){
+            this.puntuaciones[i] = x[i];
+        }
+    }
     
+    public void setNum(int x, Puntuacion y){
+        this.puntuaciones[x] = y;
+    }
+    
+    public void order(){
+        for (int i = 0; i< getPuntuaciones().length-1;i++){
+            for (int j = i+1; j< getPuntuaciones().length; j++){
+                if (getPuntuaciones()[j].getPuntuacion() > getPuntuaciones()[i].getPuntuacion()){
+                    Puntuacion p = getPuntuaciones()[j];
+                    getPuntuaciones()[j] =  getPuntuaciones()[i];
+                    getPuntuaciones()[i] = p;
+                }
+            }
+        }
+    }
 }
