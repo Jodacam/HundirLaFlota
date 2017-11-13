@@ -21,27 +21,27 @@
                 <li id="lista7">1100</li>
                 <li id="lista8">1000</li>
                 <li id="lista9">900</li>
-            </olid="listai">
+            </ol>
         </div>
         <form action="index.html">
             <button class="boton" type="submit" />Volver al menu</button>
         </form>
     </div>
     <script type="text/javascript">
-   window.onload =function(){ 
-  var datos;
-   $.ajax( {  
-        method : "GET",
-        url : "http://localhost:8080/getPuntuacion",
-   }).done(function(data){
-    datos = JSON.parse(data);
-    for (var i = 0; i<10; i++){
-      $("#lista" + i).html(datos[i].Name + ": " + datos[i].Puntuacion);     
-    }
-   })
+        window.onload =function(){ 
+        var datos;
+        
+        $.ajax( {  
+            method : "GET",
+            url : "http://localhost:8080/getPuntuacion",
+        }).done(function(data){
+            datos = data;
+            for (var i = 0; i<10; i++){
+                $("#lista" + i).html(datos[i].name + ": " + datos[i].puntuacion);     
+            }
+        })
 
-   }
-    
+        }
     </script>
 </body>
 
