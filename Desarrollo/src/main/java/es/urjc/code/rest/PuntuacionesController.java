@@ -50,7 +50,7 @@ public class PuntuacionesController {
         
         puntuaciones.order();
         
-        String dataText = JsonMapper.toJson(puntuaciones);
+        String dataText = JsonMapper.toJson(puntuaciones.getPuntuaciones());
         File archivo = new File ("Puntuaciones.json");
         FileWriter writer = new FileWriter(archivo);
         PrintWriter pw = new PrintWriter(writer);
