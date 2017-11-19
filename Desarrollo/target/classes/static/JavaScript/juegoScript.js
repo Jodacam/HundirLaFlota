@@ -250,7 +250,10 @@
                 if(ahogarIA === 0){
                     gameState = LOSE;
                     var puntuacion = (acierto - fallos) * 100;
-                    game.add.text(16, window.innerHeight-100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
+                    game.add.text(16, window.innerHeight - 100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
+
+                    SubirPuntuaciones(puntuacion);
+
                 } else{
                     gameState = PART_TWO;   
                 }
@@ -306,6 +309,9 @@
                                 gameState = WIN;
                                 var puntuacion = (acierto - fallos) * 100;
                                 game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#ffffff' });
+
+                                SubirPuntuaciones(puntuacion);
+
                             } else{
                             gameState = WAIT;   
                             setTimeout(tableroAliado.checkRectangleIA, 600);
@@ -745,6 +751,20 @@
             return false;
         }
 
+        function SubirPuntuaciones(puntacion){
+            var nombre = prompt("Inserte nombre para almacenar su puntuacion", "");
+
+            if (nombre !== "") {
+                $.ajax({
+                    method: "POST",
+                    url: "http://localhost:8080/setPuntuacion",
+                    data: JSON.stringify({ name: nombre, puntuacion: puntacion}),
+                    headers: {
+                        "Content-type": "application/json"
+                    }
+                })
+            }
+        }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
