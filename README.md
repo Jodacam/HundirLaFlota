@@ -57,7 +57,7 @@ A partir de la Fase 3, al finalizar el juego, aparece un cuadro de inserción de
 ![Diagrama](/Diagrama/DiagramaJR.PNG "Diagrama")
 ___
 ## 6 Diagrama de clases
-![Diagrama2](/Diagrama/Diagrama_UML.PNG "Diagrama UML")
+![Diagrama2](/Diagrama/Diagrama_UML.PNG "Diagrama UML")  
 Nuestra API REST tiene un único @RestController que maneja un objeto "Puntuaciones", compuesto a su vez de un array de objetos "Puntuacion". Implementa una petición GET, que solicita la totalidad del top 10 de puntuaciones; y un método POST, que almacena una nueva puntuación y ordena de mayor a menor el array de puntuaciones.   
 ___
 ## 7 Instrucciones de ejecución
@@ -66,6 +66,6 @@ Para ejecutar la Aplicacion HLFOnline hay que realizar los pasos siguientes:
 2. Descomprimimos el archivo zip.
 3. Dentro de Desarrollo/target abrimos la consola de comandos.
 4. Escribimos java - jar HLFOnline-1.0.jar.
-5. Esperamos hasta que la consola Deje de escribir.
-6. Abrimos nuestro navegador y escrbimos la url : localhost:8080
+5. Esperamos hasta que la consola deje de escribir.
+6. Abrimos nuestro navegador y escrbimos la url localhost:8080
 7. Comenzamos a jugar.
