@@ -65,7 +65,7 @@ Para ejecutar la Aplicacion HLFOnline hay que realizar los pasos siguientes:
 1. Primero descargamos el codigo fuente de https://github.com/Jodacam/HundirLaFlota.
 2. Descomprimimos el archivo zip.
 3. Dentro de Desarrollo/target abrimos la consola de comandos.
-4. Escribimos java - jar HLFOnline-1.0.jar.
+4. Escribimos java -jar HLFOnline-1.0.jar.
 5. Esperamos hasta que la consola deje de escribir.
 6. Abrimos nuestro navegador y escrbimos la url localhost:8080
 7. Comenzamos a jugar.
