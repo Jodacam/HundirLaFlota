@@ -252,7 +252,7 @@
                     var puntuacion = (acierto - fallos) * 100;
                     game.add.text(16, window.innerHeight - 100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
 
-                    SubirPuntuaciones(puntuacion);
+                    setTimeout(SubirPuntuaciones,100,puntuacion);
 
                 } else{
                     gameState = PART_TWO;   
@@ -309,8 +309,8 @@
                                 gameState = WIN;
                                 var puntuacion = (acierto - fallos) * 100;
                                 game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#ffffff' });
-
-                                SubirPuntuaciones(puntuacion);
+                                   
+                                setTimeout(SubirPuntuaciones,100,puntuacion);
 
                             } else{
                             gameState = WAIT;   
