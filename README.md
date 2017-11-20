@@ -4,8 +4,10 @@ ___
 1. Desarrolladores y Créditos
 2. Descripción del Juego
 3. Funcionamiento en el Cliente
-4. Funcionamiento en el lado del Servidor  
+4. Funcionamiento en el lado del Servidor
 5. Diagrama de Juego
+6. Diagrama de clases
+7. Instrucciones de ejecución
 ___
 ## 1 Desarrolladores y Créditos
 #### Pablo Rodríguez  
@@ -50,4 +52,20 @@ Corresponde al final de la "Fase 1", apareciendo un botón que da inicio a la "F
 ![Pantalla5](/Diagrama/Captura5.PNG "Pantalla 5")
 ![Pantalla6](/Diagrama/Captura6.PNG "Pantalla 6")
 Ambas pantallas muestran el fin de la "Fase 2", ya corresponda la victoria al jugador o a la IA. Esto se indicará con un mensaje en la esquina inferior izquierda, junto con los puntos obtenidos en esta partida. Dos botones acompañan a estas pantallas: El primero para dar comienzo de nuevo al juego (Pantalla 3), y el segundo para regresar al menú (Pantalla 1).   
+![Pantalla7](/Diagrama/Captura7.PNG "Pantalla 7")
+A partir de la Fase 3, al finalizar el juego, aparece un cuadro de inserción de texto, pidiendo un nombre al usuario. Esto permitirá almacenar su puntuación actual asociada a su nick.   
 ![Diagrama](/Diagrama/DiagramaJR.PNG "Diagrama")
+___
+## 6 Diagrama de clases
+![Diagrama2](/Diagrama/Diagrama_UML.PNG "Diagrama UML")
+Nuestra API REST tiene un único @RestController que maneja un objeto "Puntuaciones", compuesto a su vez de un array de objetos "Puntuacion". Implementa una petición GET, que solicita la totalidad del top 10 de puntuaciones; y un método POST, que almacena una nueva puntuación y ordena de mayor a menor el array de puntuaciones.   
+___
+## 7 Instrucciones de ejecución
+Para ejecutar la Aplicacion HLFOnline hay que realizar los pasos siguientes:
+1. Primero descargamos el codigo fuente de https://github.com/Jodacam/HundirLaFlota.
+2. Descomprimimos el archivo zip.
+3. Dentro de Desarrollo/target abrimos la consola de comandos.
+4. Escribimos java - jar HLFOnline-1.0.jar.
+5. Esperamos hasta que la consola Deje de escribir.
+6. Abrimos nuestro navegador y escrbimos la url : localhost:8080
+7. Comenzamos a jugar.
