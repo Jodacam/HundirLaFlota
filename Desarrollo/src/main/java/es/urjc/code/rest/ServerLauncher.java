@@ -8,10 +8,28 @@ import java.io.PrintWriter;
 import java.util.Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.socket.config.annotation.*;
+
 
 @SpringBootApplication
-public class ServerLauncher {
+@EnableWebSocket
+public class ServerLauncher implements WebSocketConfigurer {
 
+    
+@Override
+public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+
+   registry.addHandler(echoHandler(), "/echo").setAllowedOrigins("*");
+}
+
+@Bean
+public WebSocketManager echoHandler() {
+            return new WebSocketManager();
+}
+
+    
+    
     public static void main(String[] args) throws IOException {	
         
         SpringApplication app = new SpringApplication(ServerLauncher.class);

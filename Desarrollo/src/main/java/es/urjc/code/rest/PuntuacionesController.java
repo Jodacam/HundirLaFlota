@@ -45,6 +45,7 @@ public class PuntuacionesController {
         }
         
         Puntuacion y  = JsonMapper.fromJson(puntos, Puntuacion.class);
+        y.getPuntuacion();
         
         puntuaciones.setNum(10, y);
         
