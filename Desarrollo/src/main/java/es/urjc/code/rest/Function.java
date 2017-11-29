@@ -5,10 +5,12 @@
  */
 package es.urjc.code.rest;
 
+import org.springframework.web.socket.WebSocketSession;
+
 /**
  *
  * @author jd.campos
  */
 public interface Function {   
-    public void ExecuteAction(String[] params);
+    public void ExecuteAction(String[] params,WebSocketSession session);
 }
