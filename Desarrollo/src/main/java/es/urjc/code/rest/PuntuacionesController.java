@@ -22,7 +22,7 @@ public class PuntuacionesController {
    @Autowired
    public Puntuaciones puntuaciones;
    
-   @RequestMapping(value = "/getPuntuacion", method = RequestMethod.GET)
+   @RequestMapping(value = "/puntuacion", method = RequestMethod.GET)
    public Puntuacion[] GetPuntuaciones() throws FileNotFoundException, IOException{                        
         if (puntuaciones.getPuntuaciones()[0] == null ){
             File archivo = new File ("Puntuaciones.json");
@@ -35,7 +35,7 @@ public class PuntuacionesController {
         return puntuaciones.getPuntuaciones();
     }
    
-   @RequestMapping(value = "/setPuntuacion", method = RequestMethod.POST)
+   @RequestMapping(value = "/puntuacion", method = RequestMethod.POST)
    public void AddPuntuacion(@RequestBody String puntos) throws FileNotFoundException, IOException{
         if (puntuaciones.getPuntuaciones()[0] == null ){
             File archivo = new File ("Puntuaciones.json");
