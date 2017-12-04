@@ -1,4 +1,6 @@
 "use strict";
+        var session = new WebSocket('ws://127.0.0.1:8080/echo');
+
         var fallos = 0;
         var acierto = 0;
         var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
@@ -6,8 +8,23 @@
         var sound = document.getElementById("music");
         sound.volume = 0.2;
 
+        var info = {
+            jugador:1,
+            partidaId:null
+        };
+
         var explosion = document.getElementById("explosion");
         explosion.volume = 0.4;
+
+        var funciones = {
+            FuncionIniciarPartida : function(params){
+                console.log(params);
+                gameState = PART_ONE;
+                info.partidaId = params[0];
+                info.jugador = params[1];
+            }
+        }
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -520,12 +537,13 @@
 
         var anchura = window.innerWidth/2;
         var anchoTablero = anchura*0.6;
-        var gameState ='';
         const PART_ONE = "parte1";
-        const PART_TWO = 'parte2';
+        const PART_TWO = "parte2";
         const WIN = "win";
         const LOSE = "lose";
-        const WAIT = 'espera';
+        const WAIT = "espera";
+        const LOADING = "cargando";
+        var gameState = LOADING;
 
         function preload(){
             game.load.image('barco2', 'images/Barco2Solo.png');
@@ -545,7 +563,7 @@
 
         function create() {
             //Para pintar los rect de las celdas
-            gameState = PART_ONE;
+            
             bmd = game.add.bitmapData(game.width, game.height);
 
             //Distintas formas de cambiar el fondo
@@ -652,6 +670,12 @@
 
                 }
             })
+
+            if (info.jugador) {
+
+            }
+            
+            
         }
 
         function restart(){
@@ -757,7 +781,7 @@
             if (nombre !== "") {
                 $.ajax({
                     method: "POST",
-                    url: "http://localhost:8080/setPuntuacion",
+                    url: "http://localhost:8080/puntuacion",
                     data: JSON.stringify({ name: nombre, puntuacion: puntacion}),
                     headers: {
                         "Content-type": "application/json"
@@ -768,3 +792,19 @@
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        session.onopen = function(){
+            
+            session.send(JSON.stringify({
+                                tipo:"FuncionBuscarPartida",
+                                params:[]
+                            }));
+            
+        }
+
+        session.onmessage = function(msg){
+            
+            console.log(msg.data);
+            var data = JSON.parse(msg.data);
+            funciones[data.tipo](data.params);
+            
+        }
