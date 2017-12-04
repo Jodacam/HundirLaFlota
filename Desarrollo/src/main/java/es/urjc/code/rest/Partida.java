@@ -27,8 +27,8 @@ public class Partida {
     
     public void IniciarPartida(WebSocketSession jugador,Integer id) throws IOException{
         jugador2=jugador;
-        jugador2.sendMessage(new TextMessage("{tipo:'FuncionIniciarPartida',params:["+id+"]}"));
-        jugador1.sendMessage(new TextMessage("{tipo:'FuncionIniciarPartida',params:["+id+"]}"));
+        jugador2.sendMessage(new TextMessage("{\"tipo\":\"FuncionIniciarPartida\",\"params\":["+id+","+ 2 +"]}"));
+        jugador1.sendMessage(new TextMessage("{\"tipo\":\"FuncionIniciarPartida\",\"params\":["+id+","+ 1 +"]}"));
     }
     
     //Getters & Setters

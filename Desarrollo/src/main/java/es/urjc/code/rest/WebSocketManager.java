@@ -38,15 +38,18 @@ Integer id = 0;
                     if(!p.getValue().Iniciada()){
                         try {
                             p.getValue().IniciarPartida(session,id-1);
+                            return;
                         } catch (IOException ex) {
                             Logger.getLogger(WebSocketManager.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 
-                }
+                }                                      
+                Partidas.put(id,new Partida(session));
+                id++;
+                        
                 
-                    Partidas.put(id,new Partida(session));
-                    id++;
+                    
             } 
         });
         
