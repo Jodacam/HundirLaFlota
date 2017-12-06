@@ -58,16 +58,47 @@ Integer id = 0;
                 Partidas.remove(Integer.parseInt(params[0]));
             }
         });
+        this.Funciones.put("FuncionConfirmar",new Function(){
+            public void ExecuteAction(String[] params, WebSocketSession session){
+                int partidaId = Integer.parseInt(params[0]);
+                int jugadorId = Integer.parseInt(params[1]);
+                 try {
+                    Partidas.get(partidaId).Confirmar(jugadorId);
+                } catch (IOException ex) {
+                    Logger.getLogger(WebSocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+             }                     
+        });
+        
         
         this.Funciones.put("FuncionHit", new Function(){   
             public void ExecuteAction(String[] params,WebSocketSession session){
-                System.out.print(params[0]);
+                int partidaId = Integer.parseInt(params[0]);
+                int jugadorId = Integer.parseInt(params[1]);
+                int posx = Integer.parseInt(params[2]);
+                int posy = Integer.parseInt(params[3]);
+                try {
+                    Partidas.get(partidaId).Hit(jugadorId, posx, posy);
+                } catch (IOException ex) {
+                    Logger.getLogger(WebSocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                 
             } 
         });
         
         this.Funciones.put("FuncionReturnHit", new Function(){   
             public void ExecuteAction(String[] params,WebSocketSession session){
-                System.out.print(params[0]);
+                int partidaId = Integer.parseInt(params[0]);
+                int jugadorId = Integer.parseInt(params[1]);
+                int posx = Integer.parseInt(params[2]);
+                int posy = Integer.parseInt(params[3]);
+                boolean tocado = Boolean.parseBoolean(params[4]);
+                 try {
+                    Partidas.get(partidaId).ReturnHit(jugadorId, posx, posy,tocado);
+                } catch (IOException ex) {
+                    Logger.getLogger(WebSocketManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             } 
         });
         

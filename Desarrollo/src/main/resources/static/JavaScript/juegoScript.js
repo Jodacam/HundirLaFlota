@@ -22,7 +22,80 @@
                 gameState = PART_ONE;
                 info.partidaId = params[0];
                 info.jugador = params[1];
+            },
+            FuncionCambiarFase:function(params){
+                gameState = params[0];
+            },
+            FuncionRecibirHit:function(params){
+                var Tocado;
+                var i = parseInt(params[0]);
+                var j = parseInt(params[1]);
+                var casilla = tableroAliado.getTablero()[i][j];
+                var rect = casilla.getRect();
+                if (ComprobarEnemigo(i, j)) {
+                            //Funcion que pone en verde la casilla si hemos acertado
+                            var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
+                            sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                            sprite.width = anchoTablero / 10;
+                            sprite.height = (anchoTablero / 10);
+                            flota.add(sprite);
+                            ahogarIA = ahogarIA - 1;
+                            Tocado = true;
+                        } else {
+                            var sprite = game.add.sprite(rect.centerX, rect.centerY, 'fallo');
+                            sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                            sprite.width = anchoTablero / 10;
+                            sprite.height = (anchoTablero / 10);
+                            flota.add(sprite);
+                            Tocado = false;
+                        }
+                        
+                session.send(JSON.stringify({
+                    tipo:"FuncionReturnHit",
+                    params:[info.partidaId.toString(),info.jugador.toString(),params[0],params[1],Tocado.toString()]
+                }))
+                gameState = PART_TWO;
+                if(ahogarIA === 0){
+                    gameState = LOSE;
+                    var puntuacion = (acierto - fallos) * 100;
+                    game.add.text(16, window.innerHeight - 100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
+                    setTimeout(SubirPuntuaciones,100,puntuacion);
+                }
+            },
+            FuncionComprobarAcierto:function(params){
+                var Tocado = params[2];
+                var i = parseInt(params[0]);
+                var j = parseInt(params[1]);
+                var casilla = tableroEnemigo.getTablero()[i][j];
+                var rect = casilla.getRect();
+                 if (Tocado){
+                                //Funcion que pone en verde la casilla si hemos acertado
+                                var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
+                                sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                                sprite.width = anchoTablero / 10;
+                                sprite.height = (anchoTablero / 10);
+                                acierto++;
+                                ahogar -= 1;
+                                flota.add(sprite);
+
+                            } else {
+                                var sprite =game.add.sprite(rect.centerX, rect.centerY, 'fallo');
+                                sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
+                                sprite.width = anchoTablero / 10;
+                                sprite.height = (anchoTablero / 10);
+                                fallos++;
+                                flota.add(sprite);
+                            }
+                            
+                 if(ahogar === 0){
+                                gameState = WIN;
+                                var puntuacion = (acierto - fallos) * 100;
+                                game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#ffffff' });                                  
+                                setTimeout(SubirPuntuaciones,100,puntuacion);
+                            }
+
             }
+
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,6 +371,9 @@
                         if (Phaser.Rectangle.contains(rect, game.input.x, game.input.y) && !casilla.getMarcado()) {
 
                             //Aqui iria la funcion que manda las coordenadas del Input y dependiendo de si hemos acertado o no, nos devolvera un true o false
+                            
+                           /* 
+                            
                             if (ComprobarEnemigo(i,j)){
                                 //Funcion que pone en verde la casilla si hemos acertado
                                 var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
@@ -319,9 +395,15 @@
                                 fallos++;
                                 flota.add(sprite);
 
-                            }
+                            }*/
+                            session.send(JSON.stringify({
+                                tipo:"FuncionHit",
+                                params:[info.partidaId.toString(),info.jugador.toString(),i.toString(),j.toString()]
+                            }))
                             casilla.setMarcado(true);
+                            gameState = WAIT;
 
+                            /*
                             if(ahogar === 0){
                                 gameState = WIN;
                                 var puntuacion = (acierto - fallos) * 100;
@@ -333,7 +415,7 @@
                             gameState = WAIT;   
                             setTimeout(tableroAliado.checkRectangleIA, 600);
                             }
-                            
+                            */
                             return true;
                         }
                     }
@@ -627,7 +709,11 @@
 
             //Botones
             //Boton fase2
-            button1 = game.add.button(0, 0, 'boton1', function () { gameState = PART_TWO; game.world.remove(button1); startPart2(); }, this);
+            button1 = game.add.button(0, 0, 'boton1', function () { session.send(JSON.stringify({
+                tipo:"FuncionConfirmar",
+                params:[info.partidaId.toString(),info.jugador.toString()]        
+            })); game.world.remove(button1); startPart2(); }, this);
+            
             button1.anchor.setTo(0.5,0.5);
             button1.height = anchoTablero/4;
             button1.width = anchoTablero/2;
