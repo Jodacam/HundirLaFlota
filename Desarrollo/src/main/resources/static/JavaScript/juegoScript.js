@@ -32,6 +32,8 @@
                 var j = parseInt(params[1]);
                 var casilla = tableroAliado.getTablero()[i][j];
                 var rect = casilla.getRect();
+                var barquito = casilla.getBarco();
+                var casillas = "";
                 if (ComprobarEnemigo(i, j)) {
                             //Funcion que pone en verde la casilla si hemos acertado
                             var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
@@ -41,6 +43,16 @@
                             flota.add(sprite);
                             ahogarIA = ahogarIA - 1;
                             Tocado = true;
+
+                        
+                             if(barquito.getPartesVivas() === 0){
+
+                                for(var i = 0; i < barquito.getNumCel(); i++){
+                                    var celdaParte = barquito.getPartesBarco()[i];
+
+                                    casillas = casillas + celdaParte.getX() + "-" + celdaParte.getY() + ",";
+                                    }
+                            }
                         } else {
                             var sprite = game.add.sprite(rect.centerX, rect.centerY, 'fallo');
                             sprite.anchor.setTo(0.5, 0.5);    //colocamos el centro del sprite
@@ -50,17 +62,9 @@
                             Tocado = false;
                         }
 
-                        var barquito = casilla.getBarco();
-                        var casillas = "";
 
-                        if(barquito.getPartesVivas() === 0){
 
-                            for(var i = 0; i < barquito.getNumCel(); i++){
-                                var celdaParte = barquito.getPartesBarco()[i];
-
-                                casillas = casillas + celdaParte.getX() + "-" + celdaParte.getY() + ",";
-                            }
-                        }
+                        casillas = casillas.substring(0,casillas.length-1);
 
                     session.send(JSON.stringify({
                             tipo:"FuncionReturnHit",
@@ -110,10 +114,11 @@
 
                                 parteGlobal = partesBarco.split(",");
 
-                                for(var i = 0; i < parteGlobal.length(); i++){
+                                for(var i = 0; i < parteGlobal.length; i++){
                                     parteCoordenada = parteGlobal[i].split("-");
 
                                     CambiarColor(parteCoordenada[0], parteCoordenada[1]);
+                                    game.world.bringToTop(flota);
                                 }
 
                                 explosion.play();
