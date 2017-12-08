@@ -94,7 +94,7 @@ Integer id = 0;
                 int posy = Integer.parseInt(params[3]);
                 boolean tocado = Boolean.parseBoolean(params[4]);
                  try {
-                    Partidas.get(partidaId).ReturnHit(jugadorId, posx, posy,tocado);
+                    Partidas.get(partidaId).ReturnHit(jugadorId, posx, posy,tocado, params[5]);
                 } catch (IOException ex) {
                     Logger.getLogger(WebSocketManager.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -73,12 +73,12 @@ public class Partida {
     
     
     }
-        public void ReturnHit(int id, int posx, int posy, boolean tocado) throws IOException{
+        public void ReturnHit(int id, int posx, int posy, boolean tocado, String celdasBarco) throws IOException{
         if (id == 1){
-            this.jugador2.sendMessage(new TextMessage("{\"tipo\":\"FuncionComprobarAcierto\",\"params\":["+posx+","+posy+"," +tocado+"]}"));
+            this.jugador2.sendMessage(new TextMessage("{\"tipo\":\"FuncionComprobarAcierto\",\"params\":["+posx+","+posy+"," +tocado+"," + celdasBarco + "]}"));
             }
         else {
-            this.jugador1.sendMessage(new TextMessage("{\"tipo\":\"FuncionComprobarAcierto\",\"params\":["+posx+","+posy+"," +tocado+"]}")); 
+            this.jugador1.sendMessage(new TextMessage("{\"tipo\":\"FuncionComprobarAcierto\",\"params\":["+posx+","+posy+"," +tocado+"," + celdasBarco + "]}")); 
         }
     
     }

@@ -49,12 +49,26 @@
                             flota.add(sprite);
                             Tocado = false;
                         }
-                        
-                session.send(JSON.stringify({
-                    tipo:"FuncionReturnHit",
-                    params:[info.partidaId.toString(),info.jugador.toString(),params[0],params[1],Tocado.toString()]
-                }))
+
+                        var barquito = casilla.getBarco();
+                        var casillas = "";
+
+                        if(barquito.getPartesVivas() === 0){
+
+                            for(var i = 0; i < barquito.getNumCel(); i++){
+                                var celdaParte = barquito.getPartesBarco()[i];
+
+                                casillas = casillas + celdaParte.getX() + "-" + celdaParte.getY() + ",";
+                            }
+                        }
+
+                    session.send(JSON.stringify({
+                            tipo:"FuncionReturnHit",
+                            params:[info.partidaId.toString(),info.jugador.toString(),params[0],params[1],Tocado.toString(), casillas]
+                    }))
+                
                 gameState = PART_TWO;
+
                 if(ahogarIA === 0){
                     gameState = LOSE;
                     var puntuacion = (acierto - fallos) * 100;
@@ -68,6 +82,9 @@
                 var j = parseInt(params[1]);
                 var casilla = tableroEnemigo.getTablero()[i][j];
                 var rect = casilla.getRect();
+
+                var partesBarco = params[3];
+
                  if (Tocado){
                                 //Funcion que pone en verde la casilla si hemos acertado
                                 var sprite = game.add.sprite(rect.centerX, rect.centerY, 'acierto');
@@ -87,6 +104,21 @@
                                 flota.add(sprite);
                             }
                             
+                            if(partesBarco !== ""){
+                                var parteGlobal;
+                                var parteCoordenada;
+
+                                parteGlobal = partesBarco.split(",");
+
+                                for(var i = 0; i < parteGlobal.length(); i++){
+                                    parteCoordenada = parteGlobal[i].split("-");
+
+                                    CambiarColor(parteCoordenada[0], parteCoordenada[1]);
+                                }
+
+                                explosion.play();
+                            }
+
                  if(ahogar === 0){
                                 gameState = WIN;
                                 var puntuacion = (acierto - fallos) * 100;
@@ -475,6 +507,14 @@
                 return col;
             }
 
+            this.getPartesBarco = function(){
+                return partes;
+            }
+
+            this.getPartesVivas = function(){
+                return partesViva;
+            }
+
             this.setPosParteBarco = function(x,y,indice){
                 partes[indice].setCelda(x,y);
             }
@@ -489,14 +529,18 @@
                 for (var p in partes) {
                     if (partes[p].ComprobarToque(i, j)) {
                         partesViva--;
+                        /*
                         if (partesViva === 0) {
                             for (var t in partes) {
                                 partes[t].CambiarColor("#ffff00");
                                 game.world.bringToTop(flota);
                             }
                         }
-                        return true;
+                        */
 
+
+
+                        return true;
                     }
                 }
                 return false;
@@ -550,14 +594,13 @@
                 else
                     return false;
             }
-            this.CambiarColor = function (color) {
-                tableroEnemigo.getTablero()[x][y].setColorA(color);
-                tableroEnemigo.getTablero()[x][y].pintarHundidos();
-                explosion.play();
-            }
         }
 
 
+        function CambiarColor(x, y) {
+            tableroEnemigo.getTablero()[x][y].setColorA("#ffff00");
+            tableroEnemigo.getTablero()[x][y].pintarHundidos();
+        }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
