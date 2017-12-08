@@ -22,9 +22,16 @@
                 gameState = PART_ONE;
                 info.partidaId = params[0];
                 info.jugador = params[1];
+                textoCargando.text = '';
             },
             FuncionCambiarFase:function(params){
                 gameState = params[0];
+
+                if (gameState === PART_TWO) {
+                    textoArriba.text = 'Tu turno'; 
+                } else {
+                    textoArriba.text = 'Turno enemigo';
+                }
             },
             FuncionRecibirHit:function(params){
                 var Tocado;
@@ -72,6 +79,8 @@
                     }))
                 
                 gameState = PART_TWO;
+
+                textoArriba.text = 'Tu turno';
 
                 if(ahogarIA === 0){
                     gameState = LOSE;
@@ -440,6 +449,8 @@
                             casilla.setMarcado(true);
                             gameState = WAIT;
 
+                            textoArriba.text = 'Turno Enemigo';
+
                             /*
                             if(ahogar === 0){
                                 gameState = WIN;
@@ -650,6 +661,8 @@
         var arrayBarcos;
 
         //Textos y fondo
+        var textoArriba;
+        var textoCargando;
         var letreroAliado;
         var letreroEnemigo;
         var letreroR;
@@ -693,7 +706,8 @@
 
         function create() {
             //Para pintar los rect de las celdas
-            
+            textoArriba = game.add.text(15, 15, '', { fontSize: '30px', fill: '#000' });
+
             bmd = game.add.bitmapData(game.width, game.height);
 
             //Distintas formas de cambiar el fondo
@@ -759,8 +773,9 @@
             //Boton fase2
             button1 = game.add.button(0, 0, 'boton1', function () { session.send(JSON.stringify({
                 tipo:"FuncionConfirmar",
-                params:[info.partidaId.toString(),info.jugador.toString()]        
-            })); game.world.remove(button1); startPart2(); }, this);
+                params: [info.partidaId.toString(), info.jugador.toString()]
+            })); game.world.remove(button1); startPart2();
+            }, this);
             
             button1.anchor.setTo(0.5,0.5);
             button1.height = anchoTablero/4;
@@ -796,6 +811,8 @@
             //Asignación de tecla para rotación
             Rotar = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
+            flota.add(textoArriba);
+
             game.world.bringToTop(flota);
             game.world.bringToTop(flotaClick);
             jQuery(document).click(function () {
@@ -805,11 +822,11 @@
                 }
             })
 
-            if (info.jugador) {
-
-            }
-            
-            
+            if (gameState === LOADING) {
+                var margenDrch = window.innerWidth / 10;
+                textoCargando = game.add.text(margenDrch, (window.innerHeight / 2) - 50, 'ESPERANDO JUGADORES', { fontSize: '100px', fill: '#000' });
+                textoCargando.width = window.innerWidth - margenDrch*2;
+            }   
         }
 
         function restart(){
