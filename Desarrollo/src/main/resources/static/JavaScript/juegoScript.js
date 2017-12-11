@@ -84,7 +84,7 @@
 
                 if(ahogarIA === 0){
                     gameState = LOSE;
-                    var puntuacion = (acierto - fallos) * 100;
+                    var puntuacion = (acierto*1000) - (fallos*100);
                     game.add.text(16, window.innerHeight - 100, '¡Has Perdido! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#000' });
                     setTimeout(SubirPuntuaciones,100,puntuacion);
                 }
@@ -135,9 +135,13 @@
 
                  if(ahogar === 0){
                                 gameState = WIN;
-                                var puntuacion = (acierto - fallos) * 100;
+                                var puntuacion = (acierto*1000) - (fallos*100);
                                 game.add.text(16, window.innerHeight - 100, '¡Has ganado! Tu Puntuación Final es: ' + puntuacion, { fontSize: '30px', fill: '#ffffff' });                                  
                                 setTimeout(SubirPuntuaciones,100,puntuacion);
+                                session.send(JSON.stringify({
+                                    tipo:"FuncionDestruirPartida",
+                                    params:[info.partidaId.toString()]
+                                }))
                             }
 
             }
