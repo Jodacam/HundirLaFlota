@@ -1,5 +1,5 @@
 "use strict";
-        var session = new WebSocket('ws://127.0.0.1:8080/echo');
+        var session = new WebSocket('ws://'+window.location.host+'/echo');
 
         var fallos = 0;
         var acierto = 0;
@@ -932,7 +932,7 @@
             if (nombre !== "") {
                 $.ajax({
                     method: "POST",
-                    url: "http://localhost:8080/puntuacion",
+                    url: "http://"+window.location.host+"/puntuacion",
                     data: JSON.stringify({ name: nombre, puntuacion: puntacion}),
                     headers: {
                         "Content-type": "application/json"
