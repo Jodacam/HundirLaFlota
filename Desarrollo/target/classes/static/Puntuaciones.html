@@ -33,7 +33,7 @@
         
         $.ajax( {  
             method : "GET",
-            url : "http://localhost:8080/puntuacion",
+            url : "http://"+window.location.host+"/puntuacion",
         }).done(function(data){
             datos = data;
             for (var i = 0; i<10; i++){

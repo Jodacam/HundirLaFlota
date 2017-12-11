@@ -107,9 +107,9 @@ Integer id = 0;
     
     @Override
     protected void handleTextMessage(WebSocketSession session,TextMessage message) throws Exception {
-        String msg = message.getPayload();
-        Instruccion i = JsonMapper.fromJson(msg, Instruccion.class);
-         Function f = Funciones.get(i.getTipo());
+        String msg = message.getPayload();                      
+        Instruccion i = JsonMapper.fromJson(msg, Instruccion.class);            
+        Function f = Funciones.get(i.getTipo());
         f.ExecuteAction(i.getParams(),session);
     }    
 }
