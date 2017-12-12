@@ -78,4 +78,4 @@ La primera es el nombre de la función que se ha de ejecutar y la segunda contie
 Al recibir un mensaje tanto el servidor como el cliente lo transforman en un objeto, ya que el mensaje tiene un formato JSON, después con el atributo tipo se selecciona la función correspondiente mediante una colección de esas funciones y se ejecuta.
 ___
 ## 9 Demostración
-[![Video](/Diagrama/Video.PNG "Video")](https://www.youtube.com/watch?v=FOmyoDLA3jM&feature=youtu.be)
+[![Video](/Diagrama/Video.jpg "Video")](https://www.youtube.com/watch?v=FOmyoDLA3jM&feature=youtu.be)
