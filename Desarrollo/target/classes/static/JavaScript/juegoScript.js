@@ -778,7 +778,7 @@
             button1 = game.add.button(0, 0, 'boton1', function () { session.send(JSON.stringify({
                 tipo:"FuncionConfirmar",
                 params: [info.partidaId.toString(), info.jugador.toString()]
-            })); game.world.remove(button1); startPart2();
+            })); game.world.remove(button1); startPart2(); gameState = LOADING;
             }, this);
             
             button1.anchor.setTo(0.5,0.5);
